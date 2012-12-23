@@ -75,8 +75,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="source\app.cpp" />
+    <ClCompile Include="source\main_window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\main_window.h" />
     <ClInclude Include="source\wx.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

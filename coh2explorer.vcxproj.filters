@@ -18,9 +18,15 @@
     <ClCompile Include="source\app.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\main_window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\wx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\main_window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
