@@ -33,6 +33,15 @@
     <ClCompile Include="source\mappable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\fs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\fs_archive.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\fs_mod.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\wx.h">
@@ -51,6 +60,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\mappable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\fs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\fs_archive_structs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
