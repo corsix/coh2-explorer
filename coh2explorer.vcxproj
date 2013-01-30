@@ -81,12 +81,14 @@
     <ClCompile Include="source\directx.cpp" />
     <ClCompile Include="source\hash.cpp" />
     <ClCompile Include="source\main_window.cpp" />
+    <ClCompile Include="source\mappable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\arena.h" />
     <ClInclude Include="source\directx.h" />
     <ClInclude Include="source\hash.h" />
     <ClInclude Include="source\main_window.h" />
+    <ClInclude Include="source\mappable.h" />
     <ClInclude Include="source\wx.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
