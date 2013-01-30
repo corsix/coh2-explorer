@@ -38,6 +38,7 @@ Direct3DPanel::Direct3DPanel(wxWindow *parent, wxWindowID winid)
     m_rtv = nullptr;
     m_dsv = nullptr;
     m_swap_chain.resizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
+    Refresh(false);
     e.Skip();
   });
 }
