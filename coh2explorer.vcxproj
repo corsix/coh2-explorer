@@ -86,6 +86,7 @@
     <ClCompile Include="source\hash.cpp" />
     <ClCompile Include="source\main_window.cpp" />
     <ClCompile Include="source\mappable.cpp" />
+    <ClCompile Include="source\shader_db.cpp" />
     <ClCompile Include="source\texture_loader.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -97,6 +98,7 @@
     <ClInclude Include="source\hash.h" />
     <ClInclude Include="source\main_window.h" />
     <ClInclude Include="source\mappable.h" />
+    <ClInclude Include="source\shader_db.h" />
     <ClInclude Include="source\texture_loader.h" />
     <ClInclude Include="source\wx.h" />
   </ItemGroup>
