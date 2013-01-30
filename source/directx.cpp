@@ -81,14 +81,22 @@ void Direct3DPanel::startRendering()
   m_device.OMSetRenderTargets(m_rtv, m_dsv);
 
   auto size = GetClientSize();
+
   D3D10_VIEWPORT vp;
+  vp.TopLeftX = 0;
+  vp.TopLeftY = 0;
   vp.Width = size.GetWidth();
   vp.Height = size.GetHeight();
   vp.MinDepth = 0.0f;
   vp.MaxDepth = 1.0f;
-  vp.TopLeftX = 0;
-  vp.TopLeftY = 0;
   m_device.RSSetViewports(vp);
+
+  D3D10_RECT scissor;
+  scissor.left = 0;
+  scissor.right = size.GetWidth();
+  scissor.top = 0;
+  scissor.bottom = size.GetHeight();
+  m_device.RSSetScissorRects(scissor);
 }
 
 void Direct3DPanel::finishRendering()
