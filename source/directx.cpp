@@ -1,5 +1,8 @@
 #include "directx.h"
 #pragma comment(lib, "d3d10_1")
+#if defined(_DEBUG) || defined(PROFILE)
+#pragma comment(lib, "dxguid")
+#endif
 using namespace std;
 using namespace C6;
 
@@ -62,3 +65,10 @@ void Direct3DPanel::finishRendering()
   m_swap_chain.present(0, 0);
   m_device.clearState();
 }
+
+#if defined(_DEBUG) || defined(PROFILE)
+void SetDebugObjectName(C6::D3::DeviceChild resource, std::string name)
+{
+  resource.getRawInterface()->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(name.size()), name.c_str());
+}
+#endif
