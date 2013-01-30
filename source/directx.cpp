@@ -31,23 +31,54 @@ static tuple<D3::Device1, DXGI::SwapChain> InitDirect3D(HWND hWnd)
 
 Direct3DPanel::Direct3DPanel(wxWindow *parent, wxWindowID winid)
   : wxPanel(parent, winid)
+  , m_depth_format(DXGI_FORMAT_UNKNOWN)
 {
   tie(m_device, m_swap_chain) = InitDirect3D(GetHWND());
   Bind(wxEVT_SIZE, [&](wxSizeEvent& e) {
     m_rtv = nullptr;
+    m_dsv = nullptr;
     m_swap_chain.resizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
     e.Skip();
   });
+}
+
+void Direct3DPanel::setDepthFormat(DXGI_FORMAT format)
+{
+  m_depth_format = format;
+  m_depth_buffer = nullptr;
+  m_dsv = nullptr;
+}
+
+void Direct3DPanel::createDepthStencilView()
+{
+  auto desc = m_swap_chain.getBuffer<D3::Texture2D>(0).getDesc();
+  desc.MipLevels = 1;
+  desc.ArraySize = 1;
+  desc.Format = m_depth_format;
+  desc.SampleDesc.Count = 1;
+  desc.SampleDesc.Quality = 0;
+  desc.Usage = D3D10_USAGE_DEFAULT;
+  desc.BindFlags = D3D10_BIND_DEPTH_STENCIL;
+  desc.CPUAccessFlags = 0;
+  desc.MiscFlags = 0;
+  m_depth_buffer = m_device.createTexture2D(desc);
+  m_dsv = m_device.createDepthStencilView(m_depth_buffer);
 }
 
 void Direct3DPanel::startRendering()
 {
   if(!m_rtv)
     m_rtv = m_device.createRenderTargetView(m_swap_chain.getBuffer<D3::Texture2D>(0));
+  if(m_depth_format != DXGI_FORMAT_UNKNOWN)
+  {
+    if(!m_dsv)
+      createDepthStencilView();
+    m_device.clearDepthStencilView(m_dsv, D3D10_CLEAR_DEPTH | D3D10_CLEAR_STENCIL, 1.f, 0);
+  }
 
   const float bg[] = {0.f, 0.f, 0.f, 1.f};
   m_device.clearRenderTargetView(m_rtv, bg);
-  m_device.OMSetRenderTargets(m_rtv);
+  m_device.OMSetRenderTargets(m_rtv, m_dsv);
 
   auto size = GetClientSize();
   D3D10_VIEWPORT vp;
