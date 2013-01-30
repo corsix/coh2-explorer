@@ -2,6 +2,8 @@
 #include "fs.h"
 #include "shader_db.h"
 #include "model.h"
+#include "file_tree.h"
+#include <wx/splitter.h>
 
 MainWindow::MainWindow(const char* module_file, const char* rgm_path)
   : wxFrame(nullptr, wxID_ANY, L"CoH2 Explorer")
@@ -9,15 +11,23 @@ MainWindow::MainWindow(const char* module_file, const char* rgm_path)
   , m_camera_angle(0)
   , m_camera_height(2.f)
 {
+  auto splitter = new wxSplitterWindow(this, wxID_ANY);
   auto fs = Essence::CreateModFileSource(&m_arena, module_file);
-  m_essence = new Essence::Graphics::Panel(this, wxID_ANY, fs);
+  auto tree = new FileTree(splitter, wxID_ANY, fs);
+  m_essence = new Essence::Graphics::Panel(splitter, wxID_ANY, fs);
   auto device = m_essence->getDevice();
-  auto model = m_arena.alloc<Essence::Graphics::Model>(fs, m_essence->getShaders(), fs->readFile(rgm_path), device);
+  if(*rgm_path)
+    setModel(fs, rgm_path);
   updateCamera();
+
+  tree->Bind(FILE_TREE_FILE_ACTIVATED, [=](FileTreeEvent& e) {
+    setModel(e.getFileSource(), e.getPath());
+  });
 
   m_essence->Bind(wxEVT_PAINT, [=](wxPaintEvent& e) mutable {
     m_essence->startRendering();
-    model->render(device);
+    if(m_model)
+      m_model->render(device);
     m_essence->finishRendering();
   });
 
@@ -37,6 +47,27 @@ MainWindow::MainWindow(const char* module_file, const char* rgm_path)
     m_camera_height += static_cast<float>(e.GetWheelRotation()) / static_cast<float>(e.GetWheelDelta());
     updateCamera();
   });
+
+  splitter->SplitVertically(tree, m_essence, 300);
+  Maximize();
+}
+
+MainWindow::~MainWindow()
+{
+}
+
+void MainWindow::setModel(Essence::FileSource* mod_fs, const std::string& path)
+{
+  try
+  {
+    m_model.reset(new Essence::Graphics::Model(mod_fs, m_essence->getShaders(), mod_fs->readFile(path), m_essence->getDevice()));
+  }
+  catch(const std::exception& e)
+  {
+    ::wxMessageBox(wxString("Error whilst loading " + path + ":\n" + e.what()), L"Exception", wxICON_EXCLAMATION | wxOK, this);
+    return;
+  }
+  m_essence->Refresh(false);
 }
 
 void MainWindow::updateCamera()

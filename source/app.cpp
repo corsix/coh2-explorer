@@ -19,13 +19,14 @@ public:
   void OnInitCmdLine(wxCmdLineParser& parser) override
   {
     parser.AddParam("<.module file path>");
-    parser.AddParam("<.rgm file path>");
+    parser.AddParam("<.rgm file path>", wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL);
   }
 
   bool OnCmdLineParsed(wxCmdLineParser& parser) override
   {
     m_module_path = parser.GetParam(0);
-    m_rgm_path = parser.GetParam(1);
+    if(parser.GetParamCount() > 1)
+      m_rgm_path = parser.GetParam(1);
     return true;
   }
 
