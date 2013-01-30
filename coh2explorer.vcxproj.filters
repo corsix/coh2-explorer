@@ -51,6 +51,9 @@
     <ClCompile Include="source\shader_db.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\wx.h">
@@ -84,6 +87,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\shader_db.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
