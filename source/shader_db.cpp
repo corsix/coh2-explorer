@@ -412,6 +412,9 @@ namespace Essence { namespace Graphics
       default: throw runtime_error("Unsupported constant buffer parameter description version.");
       }
 
+      if(desc.ByteWidth == 0)
+        return cb;
+
       desc.Usage = D3D10_USAGE_DYNAMIC;
       desc.BindFlags = srv ? D3D10_BIND_SHADER_RESOURCE : D3D10_BIND_CONSTANT_BUFFER;
       desc.CPUAccessFlags = D3D10_CPU_ACCESS_WRITE;
@@ -697,9 +700,12 @@ namespace Essence { namespace Graphics
       if(buf.serial == serial)
         continue;
 
-      auto mapped = buf.buffer.map(D3D10_MAP_WRITE_DISCARD, 0);
-      buf.update(mapped);
-      buf.buffer.unmap();
+      if(buf.buffer)
+      {
+        auto mapped = buf.buffer.map(D3D10_MAP_WRITE_DISCARD, 0);
+        buf.update(mapped);
+        buf.buffer.unmap();
+      }
       buf.serial = serial;
     }
 
