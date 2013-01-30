@@ -80,6 +80,7 @@
     <ClCompile Include="source\arena.cpp" />
     <ClCompile Include="source\chunky.cpp" />
     <ClCompile Include="source\directx.cpp" />
+    <ClCompile Include="source\essence_panel.cpp" />
     <ClCompile Include="source\fs.cpp" />
     <ClCompile Include="source\fs_archive.cpp" />
     <ClCompile Include="source\fs_mod.cpp" />
@@ -94,6 +95,7 @@
     <ClInclude Include="source\arena.h" />
     <ClInclude Include="source\chunky.h" />
     <ClInclude Include="source\directx.h" />
+    <ClInclude Include="source\essence_panel.h" />
     <ClInclude Include="source\fs.h" />
     <ClInclude Include="source\fs_archive_structs.h" />
     <ClInclude Include="source\hash.h" />
