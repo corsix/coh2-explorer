@@ -11,8 +11,8 @@ public:
 
   inline C6::D3::Device1 getDevice() {return m_device;}
 
-  void startRendering();
-  void finishRendering();
+  virtual void startRendering();
+  virtual void finishRendering();
 
 private:
   C6::D3::Device1 m_device;
