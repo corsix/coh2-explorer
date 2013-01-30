@@ -30,7 +30,7 @@ static tuple<D3::Device1, DXGI::SwapChain> InitDirect3D(HWND hWnd)
 }
 
 Direct3DPanel::Direct3DPanel(wxWindow *parent, wxWindowID winid)
-  : wxPanel(parent, winid)
+  : wxPanel(parent, winid, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS)
   , m_depth_format(DXGI_FORMAT_UNKNOWN)
 {
   tie(m_device, m_swap_chain) = InitDirect3D(GetHWND());
