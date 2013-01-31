@@ -104,5 +104,8 @@
     <ClInclude Include="source\file_tree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\math.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

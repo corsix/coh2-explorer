@@ -103,6 +103,7 @@
     <ClInclude Include="source\hash.h" />
     <ClInclude Include="source\main_window.h" />
     <ClInclude Include="source\mappable.h" />
+    <ClInclude Include="source\math.h" />
     <ClInclude Include="source\model.h" />
     <ClInclude Include="source\shader_db.h" />
     <ClInclude Include="source\texture_loader.h" />

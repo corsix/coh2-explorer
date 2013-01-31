@@ -1,17 +1,13 @@
 #pragma once
 #include "directx.h"
 #include "arena.h"
+#include "math.h"
 
 namespace Essence { class FileSource; }
 
 namespace Essence { namespace Graphics
 {
   class ShaderDatabase;
-
-  struct vector3_t
-  {
-    float x, y, z;
-  };
 
   class Panel : public Direct3DPanel
   {
