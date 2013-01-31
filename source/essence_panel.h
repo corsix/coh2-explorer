@@ -20,7 +20,6 @@ namespace Essence { namespace Graphics
 
   private:
     using Direct3DPanel::setDepthFormat;
-    typedef float matrix44_t[4][4];
 
     Arena m_arena;
     C6::D3::Buffer m_world_matrix_buffer;

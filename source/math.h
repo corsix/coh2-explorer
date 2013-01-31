@@ -11,6 +11,7 @@ namespace Essence { namespace Graphics
   };
 
   typedef float matrix33_t[3][3];
+  typedef float matrix44_t[4][4];
 
   struct bounding_volume_t
   {
