@@ -77,6 +77,7 @@ namespace Essence { namespace Graphics
     Model(FileSource* mod_fs, ShaderDatabase* shaders, std::unique_ptr<MappableFile> rgm_file, C6::D3::Device1& d3);
 
     void render(C6::D3::Device1& d3);
+    auto getMeshes() -> const ArenaArray<Mesh*>& { return m_meshes; }
 
   private:
     Arena m_arena;
