@@ -256,7 +256,7 @@ namespace Essence { namespace Graphics
     {
       auto name = foldmtrl->getName();
       name.resize(name.size() - 1);
-      ctx.materials[name] = m_arena.alloc<Material>(foldmtrl, ctx);
+      ctx.materials[name] = m_arena.allocTrivial<Material>(foldmtrl, ctx);
     });
 
     m_meshes.recreate(&m_arena, meshes.size());
