@@ -185,6 +185,13 @@ public:
       functor(*itr);
   }
 
+  template <typename F>
+  void for_each(F&& functor) const
+  {
+    for(auto itr = begin(), e = end(); itr != e; ++itr)
+      functor(*itr);
+  }
+
 private:
   uint32_t m_size;
   T* m_elements;
