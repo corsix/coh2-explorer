@@ -38,7 +38,7 @@ namespace Essence { namespace Graphics
 
   private:
     Effect* m_effect;
-    std::vector<MaterialVariable*> m_material_variables;
+    ArenaArray<MaterialVariable*> m_material_variables;
   };
 
   class Object
@@ -68,7 +68,7 @@ namespace Essence { namespace Graphics
     C6::D3::InputLayout m_input_layout;
     C6::D3::Buffer m_verticies;
     unsigned int m_vertex_stride;
-    std::vector<Object*> m_objects;
+    ArenaArray<Object*> m_objects;
   };
 
   class Model
@@ -80,7 +80,7 @@ namespace Essence { namespace Graphics
 
   private:
     Arena m_arena;
-    std::vector<Mesh*> m_meshes;
+    ArenaArray<Mesh*> m_meshes;
     std::unique_ptr<const ChunkyFile> m_file;
     ShaderDatabase* m_shaders;
   };

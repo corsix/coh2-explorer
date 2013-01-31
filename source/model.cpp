@@ -62,7 +62,17 @@ namespace Essence { namespace Graphics
     };
   }
 
+  template <typename TA, typename TV, typename F>
+  static void transform(Arena& arena, ArenaArray<TA>& arr_out, const vector<TV>& vec_in, F&& functor)
+  {
+    const auto size = vec_in.size();
+    arr_out.recreate(&arena, static_cast<uint32_t>(size));
+    for(size_t i = 0; i < size; ++i)
+      arr_out[i] = functor(vec_in[i]);
+  }
+
   Material::Material(const Chunk* foldmtrl, ModelLoadContext& ctx)
+    : m_material_variables(&ctx.arena, 0)
   {
     {
       auto datainfo = foldmtrl->findFirst("DATAINFO v1");
@@ -73,8 +83,7 @@ namespace Essence { namespace Graphics
     }
     {
       auto vars = foldmtrl->findAll("DATAVAR v1");
-      m_material_variables.reserve(vars.size());
-      transform(vars.begin(), vars.end(), back_inserter(m_material_variables), [&](const Chunk* chunk) -> MaterialVariable*
+      transform(ctx.arena, m_material_variables, vars, [&](const Chunk* chunk) -> MaterialVariable*
       {
         ChunkReader r(chunk);
         r.seek(r.read<uint32_t>());
@@ -165,6 +174,7 @@ namespace Essence { namespace Graphics
 
   Mesh::Mesh(const Chunk* foldmesh, ModelLoadContext& ctx)
     : m_bvol(&NullBoundingVolume)
+    , m_objects(&ctx.arena, 0)
   {
     auto foldmrgm = foldmesh->findFirst("FOLDMRGM");
     auto datadata = foldmrgm->findFirst("DATADATA v8");
@@ -175,9 +185,9 @@ namespace Essence { namespace Graphics
       ChunkReader r(datadata);
       r.seek(1);
       auto num_objects = r.read<uint32_t>();
-      m_objects.reserve(num_objects);
+      m_objects.recreate(&ctx.arena, num_objects);
       for(uint32_t i = 0; i < num_objects; ++i)
-        m_objects.push_back(ctx.arena.alloc<Object>(r, ctx));
+        m_objects[i] = ctx.arena.alloc<Object>(r, ctx);
 
       auto num_input_layout_elements = r.read<uint32_t>();
       vector<D3D10_INPUT_ELEMENT_DESC> input_layout;
@@ -226,7 +236,8 @@ namespace Essence { namespace Graphics
   }
 
   Model::Model(FileSource* mod_fs, ShaderDatabase* shaders, unique_ptr<MappableFile> rgm_file, Device1& d3)
-    : m_shaders(shaders)
+    : m_meshes(&m_arena, 0)
+    , m_shaders(shaders)
   {
     m_file = ChunkyFile::Open(move(rgm_file));
     if(!m_file)
@@ -248,11 +259,12 @@ namespace Essence { namespace Graphics
       ctx.materials[name] = m_arena.alloc<Material>(foldmtrl, ctx);
     });
 
-    for_each(meshes.begin(), meshes.end(), [&](const Chunk* foldmesh)
+    m_meshes.recreate(&m_arena, meshes.size());
+    for(size_t i = 0; i < meshes.size(); ++i)
     {
-      if(strstr(foldmesh->getName().c_str(), "wreck") == nullptr)
-        m_meshes.push_back(m_arena.alloc<Mesh>(foldmesh, ctx));
-    });
+      if(strstr(meshes[i]->getName().c_str(), "wreck") == nullptr)
+        m_meshes[i] = m_arena.alloc<Mesh>(meshes[i], ctx);
+    }
   }
 
   void Model::render(Device1& d3)
