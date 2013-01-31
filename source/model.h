@@ -2,6 +2,7 @@
 #include "chunky.h"
 #include "directx.h"
 #include "fs.h"
+#include "math.h"
 
 namespace Essence { namespace Graphics
 {
@@ -59,9 +60,11 @@ namespace Essence { namespace Graphics
     Mesh(const Chunk* foldmesh, ModelLoadContext& ctx);
 
     void render(C6::D3::Device1& d3);
+    const bounding_volume_t& getBoundingVolume() const;
 
   private:
     Material* m_material;
+    const bounding_volume_t* m_bvol;
     C6::D3::InputLayout m_input_layout;
     C6::D3::Buffer m_verticies;
     unsigned int m_vertex_stride;

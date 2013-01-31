@@ -161,9 +161,13 @@ namespace Essence { namespace Graphics
     return result;
   }
 
+  static const bounding_volume_t NullBoundingVolume = {};
+
   Mesh::Mesh(const Chunk* foldmesh, ModelLoadContext& ctx)
+    : m_bvol(&NullBoundingVolume)
   {
-    auto datadata = foldmesh->findFirst("FOLDMRGM")->findFirst("DATADATA v8");
+    auto foldmrgm = foldmesh->findFirst("FOLDMRGM");
+    auto datadata = foldmrgm->findFirst("DATADATA v8");
     if(!datadata)
       throw runtime_error("Mesh missing data");
 
@@ -210,6 +214,15 @@ namespace Essence { namespace Graphics
         m_input_layout = ctx.d3.createInputLayout(input_layout, pass0->getInputSignature());
       }
     }
+
+    auto databvol = foldmrgm->findFirst("DATABVOL v2");
+    if(databvol && databvol->getSize() >= 61)
+      m_bvol = reinterpret_cast<const bounding_volume_t*>(databvol->getContents() + 1);
+  }
+
+  const bounding_volume_t& Mesh::getBoundingVolume() const
+  {
+    return *m_bvol;
   }
 
   Model::Model(FileSource* mod_fs, ShaderDatabase* shaders, unique_ptr<MappableFile> rgm_file, Device1& d3)
