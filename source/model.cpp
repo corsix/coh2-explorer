@@ -259,12 +259,10 @@ namespace Essence { namespace Graphics
       ctx.materials[name] = m_arena.allocTrivial<Material>(foldmtrl, ctx);
     });
 
-    m_meshes.recreate(&m_arena, meshes.size());
-    for(size_t i = 0; i < meshes.size(); ++i)
+    transform(m_arena, m_meshes, meshes, [&](const Chunk* foldmesh)
     {
-      if(strstr(meshes[i]->getName().c_str(), "wreck") == nullptr)
-        m_meshes[i] = m_arena.alloc<Mesh>(meshes[i], ctx);
-    }
+      return m_arena.alloc<Mesh>(foldmesh, ctx);
+    });
   }
 
   void Model::render(Device1& d3)
