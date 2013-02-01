@@ -147,6 +147,7 @@ namespace Essence { namespace Graphics
     case 6: result.SemanticName = "COLOR"; break;
     case 8: result.SemanticName = "TEXCOORD"; break;
     case 9: result.SemanticName = "TEXCOORD"; result.SemanticIndex = 1; break;
+    case 10: result.SemanticName = "TEXCOORD"; result.SemanticIndex = 2; break;
     case 14: result.SemanticName = "TEXCOORD"; result.SemanticIndex = 9; break;
     default: throw runtime_error("Unrecognised input layout element semantic.");
     }
