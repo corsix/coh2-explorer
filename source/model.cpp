@@ -160,6 +160,7 @@ namespace Essence { namespace Graphics
     case 2: result.Format = DXGI_FORMAT_B8G8R8A8_UNORM; offset += 4; break;
     case 3: result.Format = DXGI_FORMAT_R32G32_FLOAT; offset += 8; break;
     case 4: result.Format = DXGI_FORMAT_R32G32B32_FLOAT; offset += 12; break;
+    case 5: result.Format = DXGI_FORMAT_R32G32B32A32_FLOAT; offset += 16; break;
     case 13: result.Format = DXGI_FORMAT_R8G8B8A8_UINT; offset += 4; break;
     default: throw runtime_error("Unrecognised input layout element data type.");
     }
