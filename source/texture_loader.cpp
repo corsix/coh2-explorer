@@ -76,7 +76,21 @@ namespace
     }
   };
 
-  
+  Texture2D CreateConstantTexture(Device1& d3, float r, float g, float b, float a)
+  {
+    DefaultTextureDesc desc;
+    desc.Width = 1;
+    desc.Height = 1;
+    desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+
+    float texel[] = {r, g, b, a};
+    D3D10_SUBRESOURCE_DATA contents;
+    contents.pSysMem = static_cast<void*>(texel);
+    contents.SysMemPitch = sizeof(texel);
+    contents.SysMemSlicePitch = 0;
+
+    return d3.createTexture2D(desc, contents);
+  }
 
   Texture2D LoadChunkyDXTC(Device1& d3, const Chunk* dxtc)
   {
@@ -232,6 +246,10 @@ namespace Essence { namespace Graphics
       : m_mod_fs(mod_fs)
       , m_d3(d3)
     {
+      auto white = CreateConstantTexture(d3, 1.f, 1.f, 1.f, 1.f);
+      string white_name("shaders\\texture_white.rgt");
+      SetDebugObjectName(white, white_name);
+      m_textures[white_name] = d3.createShaderResourceView(white);
     }
 
     C6::D3::ShaderResourceView load(const std::string& path)
