@@ -80,6 +80,8 @@ namespace Essence { namespace Graphics
     auto getMeshes() -> const ArenaArray<Mesh*>& { return m_meshes; }
 
   private:
+    void collectMeshes(const Chunk* foldmesh, std::vector<const Chunk*>& meshes);
+
     Arena m_arena;
     ArenaArray<Mesh*> m_meshes;
     std::unique_ptr<const ChunkyFile> m_file;

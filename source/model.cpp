@@ -174,11 +174,10 @@ namespace Essence { namespace Graphics
 
   static const bounding_volume_t NullBoundingVolume = {};
 
-  Mesh::Mesh(const Chunk* foldmesh, ModelLoadContext& ctx)
+  Mesh::Mesh(const Chunk* foldmrgm, ModelLoadContext& ctx)
     : m_bvol(&NullBoundingVolume)
     , m_objects(&ctx.arena, 0)
   {
-    auto foldmrgm = foldmesh->findFirst("FOLDMRGM");
     auto datadata = foldmrgm->findFirst("DATADATA v8");
     if(!datadata)
       throw runtime_error("Mesh missing data");
@@ -212,7 +211,7 @@ namespace Essence { namespace Graphics
       vb_data.pSysMem = r.tell();
       r.seek(vb.ByteWidth);
       m_verticies = ctx.d3.createBuffer(vb, vb_data);
-      SetDebugObjectName(m_verticies, foldmesh->getName() + " verticies");
+      SetDebugObjectName(m_verticies, foldmrgm->getName() + " verticies");
 
       r.seek(4);
 
@@ -237,6 +236,27 @@ namespace Essence { namespace Graphics
     return *m_bvol;
   }
 
+  void Model::collectMeshes(const Chunk* foldmesh, std::vector<const Chunk*>& meshes)
+  {
+    if(auto mgrp = foldmesh->findFirst("FOLDMGRP"))
+    {
+      auto children = mgrp->findAll("FOLDMESH");
+      for_each(children.begin(), children.end(), [&](const Chunk* child) { collectMeshes(child, meshes); });
+    }
+    else if(auto mrgm = foldmesh->findFirst("FOLDMRGM"))
+    {
+      meshes.push_back(mrgm);
+    }
+    else if(auto trim = foldmesh->findFirst("FOLDTRIM"))
+    {
+      // TODO
+    }
+    else
+    {
+      throw runtime_error("Unknown FOLDMESH variant.");
+    }
+  }
+
   Model::Model(FileSource* mod_fs, ShaderDatabase* shaders, unique_ptr<MappableFile> rgm_file, Device1& d3)
     : m_meshes(&m_arena, 0)
     , m_shaders(shaders)
@@ -246,10 +266,12 @@ namespace Essence { namespace Graphics
       throw runtime_error("Expected a chunky file.");
     auto modl = m_file->findFirst("FOLDMODL");
     auto mtrls = modl->findAll("FOLDMTRL v1");
-    auto mgrp = modl->findFirst("FOLDMESH")->findFirst("FOLDMGRP");
-    if(!mgrp)
+    auto root = modl->findFirst("FOLDMESH");
+    vector<const Chunk*> meshes;
+    if(root)
+      collectMeshes(root, meshes);
+    if(meshes.empty())
       throw runtime_error("Chunky file doesn't contain a model.");
-    auto meshes = mgrp->findAll("FOLDMESH v3");
 
     TextureCache textures(mod_fs, d3);
     ModelLoadContext ctx = {m_arena, d3, *m_shaders, textures};
