@@ -45,6 +45,7 @@ namespace Essence { namespace Graphics
   {
   public:
     Object(ChunkReader& r, ModelLoadContext& ctx, unsigned int& first_index);
+    Object(unsigned int index_count);
     static void readIndices(ChunkReader& r, uint16_t*& destination);
 
     void render(C6::D3::Device1& d3);
@@ -64,6 +65,14 @@ namespace Essence { namespace Graphics
     const bounding_volume_t& getBoundingVolume() const;
 
   private:
+    void loadDataData5(const Chunk* datadata, ModelLoadContext& ctx);
+    void loadDataData8(const Chunk* datadata, ModelLoadContext& ctx);
+
+    void loadObjects(ChunkReader& r, ModelLoadContext& ctx);
+    void loadIndicesAsObject(ChunkReader& r, ModelLoadContext& ctx);
+    auto loadVertexData(ChunkReader& r, C6::D3::Device1& d3) -> std::vector<D3D10_INPUT_ELEMENT_DESC>;
+    void loadMaterial(ChunkReader& r, ModelLoadContext& ctx, std::vector<D3D10_INPUT_ELEMENT_DESC> input_layout);
+
     Material* m_material;
     const bounding_volume_t* m_bvol;
     C6::D3::InputLayout m_input_layout;
@@ -71,6 +80,7 @@ namespace Essence { namespace Graphics
     C6::D3::Buffer m_verticies;
     unsigned int m_vertex_stride;
     ArenaArray<Object*> m_objects;
+    std::string m_name;
   };
 
   class Model
