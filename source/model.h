@@ -24,7 +24,7 @@ namespace Essence { namespace Graphics
     const ChunkyString* m_name;
     uint32_t m_data_type;
   protected:
-    const uint8_t* m_value;
+    const ChunkyString* m_value;
   };
 
   class Material

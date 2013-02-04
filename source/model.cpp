@@ -22,7 +22,7 @@ namespace Essence { namespace Graphics
     ChunkReader r(datavar);
     m_name = r.readString();
     m_data_type = r.read<uint32_t>();
-    m_value = r.tell();
+    m_value = r.readString();
   }
 
   void MaterialVariable::apply(C6::D3::Device1& d3, uint32_t pass)
@@ -45,9 +45,7 @@ namespace Essence { namespace Graphics
         if(slot_info == nullptr)
           throw runtime_error("Missing input slot binding for texture " + getName().as<string>() + ".");
         m_slot = slot_info->slot;
-        auto len = *reinterpret_cast<const uint32_t*>(m_value);
-        auto str = reinterpret_cast<const char*>(m_value + 4);
-        auto path = string(str, str + len - 1) + ".rgt";
+        auto path = string(m_value->begin(), m_value->end() - 1) + ".rgt";
         m_srv = ctx.textures.load(path);
       }
 
@@ -86,7 +84,7 @@ namespace Essence { namespace Graphics
       transform(ctx.arena, m_material_variables, vars, [&](const Chunk* chunk) -> MaterialVariable*
       {
         ChunkReader r(chunk);
-        r.seek(r.read<uint32_t>());
+        r.readString();
         auto data_type = r.read<uint32_t>();
         switch(data_type)
         {
