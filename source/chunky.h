@@ -113,6 +113,7 @@ namespace Essence
   public:
     ChunkReader(const Chunk* chunk);
     void seek(size_t amount);
+    void seek(const uint8_t* to) { m_ptr = to; }
     const uint8_t* tell() {return m_ptr;}
 
     template <typename T>

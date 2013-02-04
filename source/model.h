@@ -44,14 +44,15 @@ namespace Essence { namespace Graphics
   class Object
   {
   public:
-    Object(ChunkReader& r, ModelLoadContext& ctx);
+    Object(ChunkReader& r, ModelLoadContext& ctx, unsigned int& first_index);
+    static void readIndices(ChunkReader& r, uint16_t*& destination);
 
     void render(C6::D3::Device1& d3);
 
   private:
     const ChunkyString* m_name;
     unsigned int m_index_count;
-    C6::D3::Buffer m_indicies;
+    unsigned int m_first_index;
   };
 
   class Mesh
@@ -66,6 +67,7 @@ namespace Essence { namespace Graphics
     Material* m_material;
     const bounding_volume_t* m_bvol;
     C6::D3::InputLayout m_input_layout;
+    C6::D3::Buffer m_indices;
     C6::D3::Buffer m_verticies;
     unsigned int m_vertex_stride;
     ArenaArray<Object*> m_objects;

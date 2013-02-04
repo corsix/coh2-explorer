@@ -110,23 +110,28 @@ namespace Essence { namespace Graphics
     });
   }
 
-  Object::Object(ChunkReader& r, ModelLoadContext& ctx)
+  Object::Object(ChunkReader& r, ModelLoadContext& ctx, unsigned int& first_index)
   {
     m_index_count = r.read<uint32_t>();
-    
-    D3D10_BUFFER_DESC ib;
-    ib.ByteWidth = m_index_count * 2;
-    ib.Usage = D3D10_USAGE_IMMUTABLE;
-    ib.BindFlags = D3D10_BIND_INDEX_BUFFER;
-    ib.CPUAccessFlags = 0;
-    ib.MiscFlags = 0;
-    D3D10_SUBRESOURCE_DATA ib_data = {r.tell()};
-    r.seek(ib.ByteWidth);
-    m_indicies = ctx.d3.createBuffer(ib, ib_data);
+
+    m_first_index = first_index;
+    first_index += m_index_count;
+    r.seek(2 * m_index_count);
 
     r.seek(sizeof(float) * 3 + 1);
     m_name = r.readString();
-    SetDebugObjectName(m_indicies, *m_name);
+  }
+
+  void Object::readIndices(ChunkReader& r, uint16_t*& destination)
+  {
+    auto index_count = r.read<uint32_t>();
+    auto source = r.tell();
+    auto size = 2 * index_count;
+    r.seek(size);
+    r.seek(sizeof(float) * 3 + 1);
+    r.readString();
+    memcpy(destination, source, size);
+    destination += index_count;
   }
 
   static D3D10_INPUT_ELEMENT_DESC ReadInputLayoutElement(ChunkReader& r, UINT& offset)
@@ -183,10 +188,30 @@ namespace Essence { namespace Graphics
     {
       ChunkReader r(datadata);
       r.seek(1);
-      auto num_objects = r.read<uint32_t>();
-      m_objects.recreate(&ctx.arena, num_objects);
-      for(uint32_t i = 0; i < num_objects; ++i)
-        m_objects[i] = ctx.arena.alloc<Object>(r, ctx);
+      {
+        unsigned int index_count = 0;
+        auto num_objects = r.read<uint32_t>();
+        m_objects.recreate(&ctx.arena, num_objects);
+
+        auto start = r.tell();
+        for(uint32_t i = 0; i < num_objects; ++i)
+          m_objects[i] = ctx.arena.allocTrivial<Object>(r, ctx, index_count);
+
+        D3D10_BUFFER_DESC ib;
+        ib.ByteWidth = index_count * 2;
+        ib.Usage = D3D10_USAGE_DYNAMIC;
+        ib.BindFlags = D3D10_BIND_INDEX_BUFFER;
+        ib.CPUAccessFlags = D3D10_CPU_ACCESS_WRITE;
+        ib.MiscFlags = 0;
+        m_indices = ctx.d3.createBuffer(ib);
+        SetDebugObjectName(m_indices, foldmrgm->getName() + " indices");
+
+        auto mapped = reinterpret_cast<uint16_t*>(m_indices.map(D3D10_MAP_WRITE_DISCARD, 0));
+        r.seek(start);
+        for(uint32_t i = 0; i < num_objects; ++i)
+          Object::readIndices(r, mapped);
+        m_indices.unmap();
+      }
 
       auto num_input_layout_elements = r.read<uint32_t>();
       vector<D3D10_INPUT_ELEMENT_DESC> input_layout;
@@ -298,6 +323,7 @@ namespace Essence { namespace Graphics
   void Mesh::render(Device1& d3)
   {
     const unsigned int vertex_offset = 0;
+    d3.IASetIndexBuffer(m_indices, DXGI_FORMAT_R16_UINT, 0);
     d3.IASetVertexBuffers(0, m_verticies, m_vertex_stride, vertex_offset);
     d3.IASetInputLayout(m_input_layout);
     d3.IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -317,8 +343,7 @@ namespace Essence { namespace Graphics
 
   void Object::render(Device1& d3)
   {
-    d3.IASetIndexBuffer(m_indicies, DXGI_FORMAT_R16_UINT, 0);
-    d3.drawIndexed(m_index_count, 0, 0);
+    d3.drawIndexed(m_index_count, m_first_index, 0);
   }
 
 } }
