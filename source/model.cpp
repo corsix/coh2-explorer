@@ -91,7 +91,7 @@ namespace Essence { namespace Graphics
         switch(data_type)
         {
         case 9: return ctx.arena.alloc<TextureVariable>(chunk, ctx, m_effect);
-        default: return ctx.arena.alloc<MaterialVariable>(chunk);
+        default: return ctx.arena.allocTrivial<MaterialVariable>(chunk);
         }
       });
     }
