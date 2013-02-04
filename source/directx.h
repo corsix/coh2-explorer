@@ -33,7 +33,13 @@ inline void SetDebugObjectName(C6::D3::DeviceChild resource, const char (&name)[
 {
   resource.getRawInterface()->SetPrivateData(WKPDID_D3DDebugObjectName, TNameLength - 1, name);
 }
-void SetDebugObjectName(C6::D3::DeviceChild resource, std::string name);
+
+template <typename T>
+typename std::enable_if<sizeof(typename T::value_type)==1>::type
+/* void */ SetDebugObjectName(C6::D3::DeviceChild resource, const T& name)
+{
+  resource.getRawInterface()->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(name.size()), name.data());
+}
 
 #else
 #define SetDebugObjectName(resource, name)

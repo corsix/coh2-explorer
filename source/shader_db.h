@@ -8,6 +8,7 @@ namespace Essence
   class FileSource;
   class ChunkyFile;
   class ChunkReader;
+  struct ChunkyString;
 }
 
 namespace Essence { namespace Graphics
@@ -118,6 +119,7 @@ namespace Essence { namespace Graphics
     ShaderDatabase(Arena* arena, FileSource* mod_fs, C6::D3::Device1 d3);
 
     Effect& load(const std::string& name);
+    Effect& load(const ChunkyString* name);
     float* getVariable(Hashable name, uint32_t size);
     void variablesUpdated();
 

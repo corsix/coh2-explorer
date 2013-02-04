@@ -61,6 +61,34 @@ namespace Essence
       static_assert(sizeof(const uint8_t*) <= sizeof(int32_t[2]), "Pointers are too large to hide inside a Chunk.");
     };
   };
+
+#pragma warning(push)
+#pragma warning(disable: 4200)
+
+  //! A string embedded in a Relic Chunky file.
+  struct ChunkyString
+  {
+  public:
+     uint32_t size()  const { return m_size; }
+        char* data()        { return m_elements; }
+  const char* data()  const { return m_elements; }
+        char* begin()       { return m_elements; }
+  const char* begin() const { return m_elements; }
+        char* end()         { return m_elements + m_size; }
+  const char* end()   const { return m_elements + m_size; }
+
+    template<typename T>
+    T as() const { return T(begin(), end()); }
+
+    typedef char value_type;
+
+  private:
+    ChunkyString();
+
+    uint32_t m_size;
+    char m_elements[];
+  };
+#pragma warning(pop)
 #pragma pack(pop)
 
   //! A Relic Chunky file.
@@ -95,19 +123,12 @@ namespace Essence
       return reinterpret_cast<const T*>(ptr);
     }
 
+    const ChunkyString* readString();
+
     template <typename T>
     T read()
     {
       return *reinterpret<T>();
-    }
-
-    template <>
-    std::string read<std::string>()
-    {
-      auto len = read<uint32_t>();
-      auto begin = reinterpret_cast<const char*>(m_ptr);
-      seek(len);
-      return std::string(begin, begin + len);
     }
 
   private:

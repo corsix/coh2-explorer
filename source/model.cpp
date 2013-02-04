@@ -20,7 +20,7 @@ namespace Essence { namespace Graphics
   MaterialVariable::MaterialVariable(const Chunk* datavar)
   {
     ChunkReader r(datavar);
-    m_name = r.read<string>();
+    m_name = r.readString();
     m_data_type = r.read<uint32_t>();
     m_value = r.tell();
   }
@@ -43,7 +43,7 @@ namespace Essence { namespace Graphics
       {
         auto slot_info = fx->getPrimaryTechnique().getPass(0)->findTexture(getName());
         if(slot_info == nullptr)
-          throw runtime_error("Missing input slot binding for texture " + getName() + ".");
+          throw runtime_error("Missing input slot binding for texture " + getName().as<string>() + ".");
         m_slot = slot_info->slot;
         auto len = *reinterpret_cast<const uint32_t*>(m_value);
         auto str = reinterpret_cast<const char*>(m_value + 4);
@@ -79,7 +79,7 @@ namespace Essence { namespace Graphics
       if(!datainfo)
         throw runtime_error("Material missing shader name");
       ChunkReader r(datainfo);
-      m_effect = &ctx.shaders.load(r.read<string>());
+      m_effect = &ctx.shaders.load(r.readString());
     }
     {
       auto vars = foldmtrl->findAll("DATAVAR v1");
@@ -127,8 +127,8 @@ namespace Essence { namespace Graphics
     m_indicies = ctx.d3.createBuffer(ib, ib_data);
 
     r.seek(sizeof(float) * 3 + 1);
-    m_name = r.read<string>();
-    SetDebugObjectName(m_indicies, m_name);
+    m_name = r.readString();
+    SetDebugObjectName(m_indicies, *m_name);
   }
 
   static D3D10_INPUT_ELEMENT_DESC ReadInputLayoutElement(ChunkReader& r, UINT& offset)
@@ -216,7 +216,7 @@ namespace Essence { namespace Graphics
       r.seek(4);
 
       {
-        auto material_name = r.read<string>();
+        auto material_name = r.readString()->as<string>();
         auto material = ctx.materials.find(material_name);
         if(material == ctx.materials.end())
           throw runtime_error("Missing materal: " + material_name);

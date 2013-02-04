@@ -174,4 +174,10 @@ namespace Essence
     m_ptr += amount;
   }
 
+  const ChunkyString* ChunkReader::readString()
+  {
+    auto str = reinterpret<ChunkyString>();
+    seek(str->size());
+    return str;
+  }
 }

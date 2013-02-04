@@ -754,6 +754,11 @@ namespace Essence { namespace Graphics
     return m_impl->load(name);
   }
 
+  Effect& ShaderDatabase::load(const ChunkyString* name)
+  {
+    return load(name->as<string>());
+  }
+
   float* ShaderDatabase::getVariable(Hashable name, uint32_t size)
   {
     return m_impl->getVariable(name.getHash(), size);

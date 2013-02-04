@@ -18,10 +18,10 @@ namespace Essence { namespace Graphics
     virtual ~MaterialVariable();
     virtual void apply(C6::D3::Device1& d3, uint32_t pass);
 
-    inline const std::string& getName() const { return m_name; }
+    inline const ChunkyString& getName() const { return *m_name; }
 
   private:
-    std::string m_name;
+    const ChunkyString* m_name;
     uint32_t m_data_type;
   protected:
     const uint8_t* m_value;
@@ -49,7 +49,7 @@ namespace Essence { namespace Graphics
     void render(C6::D3::Device1& d3);
 
   private:
-    std::string m_name;
+    const ChunkyString* m_name;
     unsigned int m_index_count;
     C6::D3::Buffer m_indicies;
   };
