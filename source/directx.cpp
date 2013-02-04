@@ -77,7 +77,7 @@ void Direct3DPanel::startRendering()
     m_device.clearDepthStencilView(m_dsv, D3D10_CLEAR_DEPTH | D3D10_CLEAR_STENCIL, 1.f, 0);
   }
 
-  const float bg[] = {0.f, 0.f, 0.f, 1.f};
+  const float bg[] = {0.1f, 0.1f, 0.1f, 1.f};
   m_device.clearRenderTargetView(m_rtv, bg);
   m_device.OMSetRenderTargets(m_rtv, m_dsv);
 
