@@ -2,35 +2,22 @@
 #include "directx.h"
 #include "arena.h"
 #include "hash.h"
+#include "chunky.h"
 
 namespace Essence
 {
   class FileSource;
-  class ChunkyFile;
-  class ChunkReader;
-  struct ChunkyString;
 }
 
 namespace Essence { namespace Graphics
 {
-  struct LengthPrefixBlock
-  {
-    LengthPrefixBlock(const LengthPrefixBlock& copy_from) : length(copy_from.length) {}
-    LengthPrefixBlock(const uint32_t* length_) : length(length_) {}
-
-    const uint32_t* length;
-
-    inline uint32_t size() { return *length; }
-    inline const uint8_t* data() { return reinterpret_cast<const uint8_t*>(length + 1); }
-  };
-
-  typedef std::pair<LengthPrefixBlock, C6::D3::DeviceChild*> LazyShader;
+  typedef std::pair<const ChunkyString*, C6::D3::DeviceChild*> LazyShader;
 
   class TechniquePass
   {
   public:
     void apply(C6::D3::Device1& d3);
-    LengthPrefixBlock getInputSignature();
+    const ChunkyString& getInputSignature();
 
 #pragma pack(push)
 #pragma pack(1)

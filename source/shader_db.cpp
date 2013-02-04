@@ -447,7 +447,7 @@ namespace Essence { namespace Graphics
   {
 #define INSTANTIATE(field, stage) \
     if(!field->second) field->second = arena->alloc<C6::D3::stage##Shader> \
-    (field->first.size() ? d3.create##stage##Shader(field->first) : nullptr)
+    (field->first->size() ? d3.create##stage##Shader(*field->first) : nullptr)
 
     INSTANTIATE(m_vs, Vertex);
     INSTANTIATE(m_gs, Geometry);
@@ -455,9 +455,9 @@ namespace Essence { namespace Graphics
 #undef INSTANTIATE
   }
 
-  LengthPrefixBlock TechniquePass::getInputSignature()
+  const ChunkyString& TechniquePass::getInputSignature()
   {
-    return m_vs->first;
+    return *m_vs->first;
   }
 
   void TechniquePass::apply(C6::D3::Device1& d3)
@@ -650,9 +650,7 @@ namespace Essence { namespace Graphics
     {
       m_shaders[category].recreate(arena, ptr.read<uint32_t>()).for_each([&ptr](LazyShader& dest){
         ptr.seek(8);
-        auto size_ptr = reinterpret_cast<const uint32_t*>(ptr.tell());
-        dest = make_pair(size_ptr, nullptr);
-        ptr.seek(4 + *size_ptr);
+        dest = make_pair(ptr.readString(), nullptr);
       });
     }
 
