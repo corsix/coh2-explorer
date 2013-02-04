@@ -1,6 +1,7 @@
 #pragma once
 #include "directx.h"
 #include "arena.h"
+#include "hash.h"
 
 namespace Essence
 {
@@ -49,7 +50,7 @@ namespace Essence { namespace Graphics
     };
 #pragma pack(pop)
 
-    const TextureInfo* findTexture(const std::string& name);
+    const TextureInfo* findTexture(Hashable name);
 
   private:
     void instantiateShaders(Arena* arena, C6::D3::Device1& d3);
@@ -117,7 +118,7 @@ namespace Essence { namespace Graphics
     ShaderDatabase(Arena* arena, FileSource* mod_fs, C6::D3::Device1 d3);
 
     Effect& load(const std::string& name);
-    float* getVariable(const std::string& name, uint32_t size);
+    float* getVariable(Hashable name, uint32_t size);
     void variablesUpdated();
 
   private:

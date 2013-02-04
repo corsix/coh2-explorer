@@ -62,9 +62,4 @@ namespace Essence
   {
     return Hash(reinterpret_cast<const uint8_t*>(data), data_len, initial_value);
   }
-
-  uint32_t Hash(const std::string& str, uint32_t initial_value)
-  {
-    return Hash(str.c_str(), static_cast<uint32_t>(str.size()), initial_value);
-  }
 }

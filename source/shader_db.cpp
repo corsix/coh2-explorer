@@ -473,9 +473,9 @@ namespace Essence { namespace Graphics
     d3.PSSetSamplers(0, m_ps_samplers);
   }
 
-  const TechniquePass::TextureInfo* TechniquePass::findTexture(const std::string& name)
+  const TechniquePass::TextureInfo* TechniquePass::findTexture(Hashable name)
   {
-    auto hash = Hash(name);
+    auto hash = name.getHash();
     for(auto ti = m_textures, end = m_textures + m_num_textures; ti != end; ++ti)
     {
       if(ti->hash == hash)
@@ -754,9 +754,9 @@ namespace Essence { namespace Graphics
     return m_impl->load(name);
   }
 
-  float* ShaderDatabase::getVariable(const std::string& name, uint32_t size)
+  float* ShaderDatabase::getVariable(Hashable name, uint32_t size)
   {
-    return m_impl->getVariable(Hash(name), size);
+    return m_impl->getVariable(name.getHash(), size);
   }
 
   void ShaderDatabase::variablesUpdated()
