@@ -107,5 +107,8 @@
     <ClInclude Include="source\math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\arena_var_tem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

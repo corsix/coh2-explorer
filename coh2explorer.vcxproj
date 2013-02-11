@@ -94,6 +94,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\arena.h" />
+    <ClInclude Include="source\arena_var_tem.h" />
     <ClInclude Include="source\chunky.h" />
     <ClInclude Include="source\directx.h" />
     <ClInclude Include="source\essence_panel.h" />

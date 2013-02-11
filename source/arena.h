@@ -16,45 +16,16 @@ public:
   Arena();
   ~Arena();
 
-#ifdef ARENA_WITH_VARIADIC_TEMPLATES
   //! Allocate a single object in the arena which will be destructed with the arena.
   /*!
     \param T The type of object to allocate.
     \param args Arguments to the object's constructor.
     \throws std::bad_alloc
   */
-  template <typename T, typename... Args>
-  T* alloc(Args&&... args) {
-    return new (static_cast<T*>(malloc(sizeof(T), &deleter<T>))) T(std::forward<Args>(args)...);
-  }
-#else
-  template <typename T>
-  T* alloc() {
-    return new (static_cast<T*>(malloc(sizeof(T), &deleter<T>))) T();
-  }
+#define METHOD alloc
+#define MALLOC malloc(sizeof(T), &deleter<T>)
+#include "arena_var_tem.h"
 
-  template <typename T, typename A1>
-  T* alloc(A1&& a1) {
-    return new (static_cast<T*>(malloc(sizeof(T), &deleter<T>))) T(std::forward<A1>(a1));
-  }
-
-  template <typename T, typename A1, typename A2>
-  T* alloc(A1&& a1, A2&& a2) {
-    return new (static_cast<T*>(malloc(sizeof(T), &deleter<T>))) T(std::forward<A1>(a1), std::forward<A2>(a2));
-  }
-
-  template <typename T, typename A1, typename A2, typename A3>
-  T* alloc(A1&& a1, A2&& a2, A3&& a3) {
-    return new (static_cast<T*>(malloc(sizeof(T), &deleter<T>))) T(std::forward<A1>(a1), std::forward<A2>(a2), std::forward<A3>(a3));
-  }
-
-  template <typename T, typename A1, typename A2, typename A3, typename A4>
-  T* alloc(A1&& a1, A2&& a2, A3&& a3, A4&& a4) {
-    return new (static_cast<T*>(malloc(sizeof(T), &deleter<T>))) T(std::forward<A1>(a1), std::forward<A2>(a2), std::forward<A3>(a3), std::forward<A4>(a4));
-  }
-#endif
-
-#ifdef ARENA_WITH_VARIADIC_TEMPLATES
   //! Allocate a single object in the arena.
   /*!
     Note that objects allocated with this method will not have their destructor called when the arena
@@ -64,36 +35,9 @@ public:
     \param args Arguments to the object's constructor.
     \throws std::bad_alloc
   */
-  template <typename T, typename... Args>
-  T* allocTrivial(Args&&... args) {
-    return new (static_cast<T*>(malloc(sizeof(T)))) T(std::forward<Args>(args)...);
-  }
-#else
-  template <typename T>
-  T* allocTrivial() {
-    return new (static_cast<T*>(malloc(sizeof(T)))) T;
-  }
-
-  template <typename T, typename A1>
-  T* allocTrivial(A1&& a1) {
-    return new (static_cast<T*>(malloc(sizeof(T)))) T(std::forward<A1>(a1));
-  }
-
-  template <typename T, typename A1, typename A2>
-  T* allocTrivial(A1&& a1, A2&& a2) {
-    return new (static_cast<T*>(malloc(sizeof(T)))) T(std::forward<A1>(a1), std::forward<A2>(a2));
-  }
-
-  template <typename T, typename A1, typename A2, typename A3>
-  T* allocTrivial(A1&& a1, A2&& a2, A3&& a3) {
-    return new (static_cast<T*>(malloc(sizeof(T)))) T(std::forward<A1>(a1), std::forward<A2>(a2), std::forward<A3>(a3));
-  }
-
-  template <typename T, typename A1, typename A2, typename A3, typename A4>
-  T* allocTrivial(A1&& a1, A2&& a2, A3&& a3, A4&& a4) {
-    return new (static_cast<T*>(malloc(sizeof(T)))) T(std::forward<A1>(a1), std::forward<A2>(a2), std::forward<A3>(a3), std::forward<A4>(a4));
-  }
-#endif
+#define METHOD allocTrivial
+#define MALLOC malloc(sizeof(T))
+#include "arena_var_tem.h"
 
   //! Allocate a block of memory in the arena.
   /*!
