@@ -89,6 +89,7 @@
     <ClCompile Include="source\main_window.cpp" />
     <ClCompile Include="source\mappable.cpp" />
     <ClCompile Include="source\model.cpp" />
+    <ClCompile Include="source\presized_arena.cpp" />
     <ClCompile Include="source\shader_db.cpp" />
     <ClCompile Include="source\texture_loader.cpp" />
   </ItemGroup>
@@ -106,6 +107,7 @@
     <ClInclude Include="source\mappable.h" />
     <ClInclude Include="source\math.h" />
     <ClInclude Include="source\model.h" />
+    <ClInclude Include="source\presized_arena.h" />
     <ClInclude Include="source\shader_db.h" />
     <ClInclude Include="source\texture_loader.h" />
     <ClInclude Include="source\wx.h" />
