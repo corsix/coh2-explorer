@@ -3,6 +3,7 @@
 #include "directx.h"
 #include "chunky.h"
 #include "arena.h"
+#include "presized_arena.h"
 #include <unordered_map>
 #include <zlib.h>
 using namespace std;
@@ -49,17 +50,12 @@ namespace
 
   struct dxtc_tdat_entry_header_t
   {
-    uint32_t unknown1;
+    uint32_t mip_level;
     uint32_t width;
     uint32_t height;
-    uint32_t unknown2;
+    uint32_t num_physical_texels;
   };
 #pragma pack(pop)
-
-  unsigned int DXTC_Stride(DWORD width, DWORD coeff)
-  {
-    return (max)(static_cast<DWORD>(1), (width + 3) / 4) * coeff;
-  }
 
   struct DefaultTextureDesc : D3D10_TEXTURE2D_DESC
   {
@@ -92,6 +88,43 @@ namespace
     return d3.createTexture2D(desc, contents);
   }
 
+  class Inflater
+  {
+  public:
+    Inflater()
+    {
+      m_z.zalloc = nullptr;
+      m_z.zfree = nullptr;
+      m_z.opaque = nullptr;
+      z_assert(inflateInit(&m_z), Z_OK);
+    }
+
+    void uncompress(uint8_t* dest, uint32_t dest_len, const uint8_t* src, uint32_t src_len)
+    {
+      m_z.next_out = dest;
+      m_z.avail_out = dest_len;
+      m_z.next_in = const_cast<Bytef*>(src);
+      m_z.avail_in = src_len;
+      z_assert(inflate(&m_z, Z_FINISH), Z_STREAM_END);
+      runtime_assert(m_z.avail_out == 0 && m_z.avail_in == 0, "Compressed data size mismatch.");
+      z_assert(inflateReset(&m_z), Z_OK);
+    }
+
+    ~Inflater()
+    {
+      inflateEnd(&m_z);
+    }
+
+  private:
+    void z_assert(int result, int expected)
+    {
+      if(result != expected)
+        throw std::runtime_error(m_z.msg);
+    }
+
+    z_stream m_z;
+  };
+
   Texture2D LoadChunkyDXTC(Device1& d3, const Chunk* dxtc)
   {
     auto tfmt_chunk = dxtc->findFirst("DATATFMT");
@@ -100,18 +133,17 @@ namespace
     auto tfmt = reinterpret_cast<const dxtc_tfmt_t*>(tfmt_chunk->getContents());
 
     DXGI_FORMAT format;
-    unsigned int stride;
-    auto c = tfmt->compression;
+    uint32_t ratio;
     switch(tfmt->compression)
     {
-    // TODO: Establish the difference between these pairs. Possibly one is meant to be SRGB and one isn't?
-    case 13: case 22: format = DXGI_FORMAT_BC1_UNORM; stride = DXTC_Stride(tfmt->width,  8); break;
-    case 14: case 23: format = DXGI_FORMAT_BC2_UNORM; stride = DXTC_Stride(tfmt->width, 16); break;
-    case 15: case 24: format = DXGI_FORMAT_BC3_UNORM; stride = DXTC_Stride(tfmt->width, 16); break;
-    default: throw runtime_error("FOLDDXTC uses unknown compression method.");
+    case 13: format = DXGI_FORMAT_BC1_UNORM_SRGB; ratio = 2; break;
+    case 14: format = DXGI_FORMAT_BC2_UNORM_SRGB; ratio = 4; break;
+    case 15: format = DXGI_FORMAT_BC3_UNORM_SRGB; ratio = 4; break;
+    case 22: format = DXGI_FORMAT_BC1_UNORM     ; ratio = 2; break;
+    case 23: format = DXGI_FORMAT_BC2_UNORM     ; ratio = 4; break;
+    case 24: format = DXGI_FORMAT_BC3_UNORM     ; ratio = 4; break;
+    default: throw runtime_error("FOLDDXTC uses unknown texture format.");
     }
-    if(tfmt->compression < 16)
-      format = static_cast<DXGI_FORMAT>(static_cast<int>(format) + 1);
 
     auto tman_chunk = dxtc->findFirst("DATATMAN");
     runtime_assert(tman_chunk != nullptr, "FOLDDXTC missing DATATMAN.");
@@ -119,45 +151,45 @@ namespace
     auto tman = reinterpret_cast<const dxtc_tman_t*>(tman_chunk->getContents());
     runtime_assert(tman->mip_count != 0, "DATATMAN contains no mip levels.");
     runtime_assert(tman_chunk->getSize() >= 4 + tman->mip_count * 8, "DATATMAN is incomplete.");
-
-    auto mip = tman->mips;
-    uint32_t tdat_offset = 0;
-    for(uint32_t i = 1; i < tman->mip_count; ++i, ++mip)
-    {
-      tdat_offset += mip->data_length_compressed;
-    }
-    runtime_assert(mip->data_length == tfmt->height * (stride / 4) + sizeof(dxtc_tdat_entry_header_t), "FOLDDXTC mip level data does not match texture dimensions.");
-
     auto tdat_chunk = dxtc->findFirst("DATATDAT");
     runtime_assert(tdat_chunk != nullptr, "FOLDDXTC missing DATATDAT.");
-    runtime_assert(tdat_chunk->getSize() >= tdat_offset + mip->data_length_compressed, "DATATDAT is too small.");
+    ChunkReader tdat_reader(tdat_chunk);
 
-    unique_ptr<uint8_t[]> uncompressed;
-    auto tdat = tdat_chunk->getContents() + tdat_offset;
-    if(mip->data_length != mip->data_length_compressed)
+    size_t img_data_capacity = sizeof(D3D10_SUBRESOURCE_DATA) * tman->mip_count;
+    for(uint32_t level = 0; level < tman->mip_count; ++level)
+      img_data_capacity += tman->mips[level].data_length;
+    PresizedArena img_data(img_data_capacity);
+
+    uint32_t level = 0;
+    auto resources = img_data.mallocArray<D3D10_SUBRESOURCE_DATA>(tman->mip_count);
+    for(Inflater inflater; level < tman->mip_count; ++level)
     {
-      uncompressed.reset(new uint8_t[mip->data_length]);
-      uLong length = mip->data_length;
-      if(uncompress(uncompressed.get(), &length, tdat, mip->data_length_compressed) != Z_OK)
-        throw runtime_error("Could not inflate payload of DATATDAT.");
-      runtime_assert(length == mip->data_length, "Inflation of DATATDAT yielded unexpected size.");
-      tdat = uncompressed.get();
-    }
+      auto& mip = tman->mips[level];
+      auto src = tdat_reader.reinterpret<uint8_t>(mip.data_length_compressed);
+      if(mip.data_length != mip.data_length_compressed)
+      {
+        auto uncompressed = img_data.mallocArray<uint8_t>(mip.data_length);
+        inflater.uncompress(uncompressed, mip.data_length, src, mip.data_length_compressed);
+        src = uncompressed;
+      }
 
-    auto tdat_header = reinterpret_cast<const dxtc_tdat_entry_header_t*>(tdat);
-    runtime_assert(tdat_header->width == tfmt->width && tdat_header->height == tfmt->height, "DATATDAT dimensions do not match DATATFMT dimensions.");
+      auto tdat_header = reinterpret_cast<const dxtc_tdat_entry_header_t*>(src);
+      runtime_assert(tdat_header->mip_level < tman->mip_count, "Unexpected mip level.");
+      runtime_assert(tdat_header->width  == (std::max)(tfmt->width  >> tdat_header->mip_level, 1U), "Invalid mip level width.");
+      runtime_assert(tdat_header->height == (std::max)(tfmt->height >> tdat_header->mip_level, 1U), "Invalid mip level height.");
+
+      auto& resource = resources[tdat_header->mip_level];
+      resource.pSysMem = tdat_header + 1;
+      resource.SysMemPitch = tdat_header->num_physical_texels / tdat_header->height * ratio;
+    }
 
     DefaultTextureDesc desc;
     desc.Width = tfmt->width;
     desc.Height = tfmt->height;
+    desc.MipLevels = level;
     desc.Format = format;
 
-    D3D10_SUBRESOURCE_DATA contents;
-    contents.pSysMem = tdat_header + 1;
-    contents.SysMemPitch = stride;
-    contents.SysMemSlicePitch = 0;
-
-    return d3.createTexture2D(desc, contents);
+    return d3.createTexture2D(desc, resources);
   }
 
   Texture2D LoadChunkyIMAG(Device1& d3, const Chunk* imag)
