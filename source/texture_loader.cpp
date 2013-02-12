@@ -198,7 +198,7 @@ namespace
     auto txtr = chunky->findFirst("FOLDTSET")->findFirst("FOLDTXTR");
     runtime_assert(txtr != nullptr, "Could not find FOLDTXTR in chunky file.");
 
-    if(auto dxtc = txtr->findFirst("FOLDDXTC")) return LoadChunkyDXTC(d3, dxtc);
+    if(auto dxtc = txtr->findFirst("FOLDDXTCv3")) return LoadChunkyDXTC(d3, dxtc);
     throw runtime_error("Unknown texture type in FOLDTXTR.");
   }
 
