@@ -192,11 +192,6 @@ namespace
     return d3.createTexture2D(desc, resources);
   }
 
-  Texture2D LoadChunkyIMAG(Device1& d3, const Chunk* imag)
-  {
-    throw runtime_error("TODO: Implement FOLDIMAG loading.");
-  }
-
   Texture2D LoadChunky(Device1& d3, unique_ptr<MappableFile> file)
   {
     auto chunky = ChunkyFile::Open(move(file));
@@ -204,7 +199,6 @@ namespace
     runtime_assert(txtr != nullptr, "Could not find FOLDTXTR in chunky file.");
 
     if(auto dxtc = txtr->findFirst("FOLDDXTC")) return LoadChunkyDXTC(d3, dxtc);
-    if(auto imag = txtr->findFirst("FOLDIMAG")) return LoadChunkyIMAG(d3, imag);
     throw runtime_error("Unknown texture type in FOLDTXTR.");
   }
 
