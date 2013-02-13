@@ -144,6 +144,37 @@ namespace
     case 24: format = DXGI_FORMAT_BC3_UNORM     ; ratio = 4; break;
     default: throw runtime_error("FOLDDXTC uses unknown texture format.");
     }
+    /*
+      The following is CoH2's texture type enumeration, which bears an
+      uncanny resemblance to the values in the above switch statement:
+       0 - RG
+       1 - RGB
+       2 - RGBA
+       3 - RGBAmask
+       4 - L
+       5 - LA
+       6 - A
+       7 - UV
+       8 - UVWQ
+       9 - Rf
+      10 - RGf
+      11 - RGBAf
+      12 - depth
+      13 - DXT1 (BC1)
+      14 - DXT3 (BC2)
+      15 - DXT5 (BC3)
+      16 - DXT7
+      17 - SHADOWMAP
+      18 - NULL
+      19 - DepthStencil
+      20 - RGB_sRGB
+      21 - RGBA_sRGB
+      22 - DXT1_sRGB (BC1)
+      23 - DXT3_sRGB (BC2)
+      24 - DXT5_sRGB (BC3)
+      25 - DXT7_sRGB
+      26 - Invalid
+    */
 
     auto tman_chunk = dxtc->findFirst("DATATMAN");
     runtime_assert(tman_chunk != nullptr, "FOLDDXTC missing DATATMAN.");
