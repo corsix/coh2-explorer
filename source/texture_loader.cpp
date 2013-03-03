@@ -142,7 +142,15 @@ namespace
     case 22: format = DXGI_FORMAT_BC1_UNORM     ; ratio = 2; break;
     case 23: format = DXGI_FORMAT_BC2_UNORM     ; ratio = 4; break;
     case 24: format = DXGI_FORMAT_BC3_UNORM     ; ratio = 4; break;
-    default: throw runtime_error("FOLDDXTC uses unknown texture format.");
+    default:
+      if(tfmt->compression >> 16 == 0xC600)
+      {
+        // CoH2 doesn't accept these values, but it is useful for us to accept them.
+        format = static_cast<DXGI_FORMAT>(tfmt->compression & 0xFF);
+        ratio = (tfmt->compression >> 8) & 0xFF;
+      }
+      else
+        throw runtime_error("FOLDDXTC uses unknown texture format.");
     }
     /*
       The following is CoH2's texture type enumeration, which bears an
