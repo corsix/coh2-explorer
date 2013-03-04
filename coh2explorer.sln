@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "coh2explorer", "coh2explorer.vcxproj", "{5A4BFFCD-EE3B-48E3-A78B-9EA1B1F43AEE}"
 EndProject
 Global
