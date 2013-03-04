@@ -3,16 +3,30 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "coh2explorer", "coh2explorer.vcxproj", "{5A4BFFCD-EE3B-48E3-A78B-9EA1B1F43AEE}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rgt_encoder", "tools\rgt_encoder\rgt_encoder.vcxproj", "{DDCD9CAA-B1D7-4BEA-823D-11DB044CCC35}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
 		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{5A4BFFCD-EE3B-48E3-A78B-9EA1B1F43AEE}.Debug|Win32.ActiveCfg = Debug|Win32
 		{5A4BFFCD-EE3B-48E3-A78B-9EA1B1F43AEE}.Debug|Win32.Build.0 = Debug|Win32
+		{5A4BFFCD-EE3B-48E3-A78B-9EA1B1F43AEE}.Debug|x64.ActiveCfg = Debug|Win32
 		{5A4BFFCD-EE3B-48E3-A78B-9EA1B1F43AEE}.Release|Win32.ActiveCfg = Release|Win32
 		{5A4BFFCD-EE3B-48E3-A78B-9EA1B1F43AEE}.Release|Win32.Build.0 = Release|Win32
+		{5A4BFFCD-EE3B-48E3-A78B-9EA1B1F43AEE}.Release|x64.ActiveCfg = Release|Win32
+		{DDCD9CAA-B1D7-4BEA-823D-11DB044CCC35}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DDCD9CAA-B1D7-4BEA-823D-11DB044CCC35}.Debug|Win32.Build.0 = Debug|Win32
+		{DDCD9CAA-B1D7-4BEA-823D-11DB044CCC35}.Debug|x64.ActiveCfg = Debug|x64
+		{DDCD9CAA-B1D7-4BEA-823D-11DB044CCC35}.Debug|x64.Build.0 = Debug|x64
+		{DDCD9CAA-B1D7-4BEA-823D-11DB044CCC35}.Release|Win32.ActiveCfg = Release|Win32
+		{DDCD9CAA-B1D7-4BEA-823D-11DB044CCC35}.Release|Win32.Build.0 = Release|Win32
+		{DDCD9CAA-B1D7-4BEA-823D-11DB044CCC35}.Release|x64.ActiveCfg = Release|x64
+		{DDCD9CAA-B1D7-4BEA-823D-11DB044CCC35}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
