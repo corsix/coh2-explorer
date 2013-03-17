@@ -8,4 +8,6 @@
 %FXC% /Tgs_4_0 /Emain %OUT%sprite_gs.bin /Vnsprite_gs sprite.gsh
 %FXC% /Tps_4_0 /Emain %OUT%sprite_ps.bin /Vnsprite_ps sprite.psh
 
+%FXC% /Tvs_4_0 /Emain %OUT%texture_vs.bin /Vntexture_vs texture.vsh
+
 pause

@@ -223,6 +223,9 @@
     <None Include="resources\sprite_ps.bin">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="resources\texture_vs.bin">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="c6ui.rc">

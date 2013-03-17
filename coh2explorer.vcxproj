@@ -142,6 +142,7 @@
     <None Include="resources\sprites.rgt" />
     <None Include="resources\sprite_gs.bin" />
     <None Include="resources\sprite_ps.bin" />
+    <None Include="resources\texture_vs.bin" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="c6ui.rc" />

@@ -78,6 +78,7 @@ namespace { namespace CMD
   static const uint32_t RectangleV = 0x00001;
   static const uint32_t Sprite     = 0x00010;
   static const uint32_t Text       = 0x10000;
+  static const uint32_t Texture    = 0x10010;
 }}
 
 namespace C6 { namespace UI
@@ -173,6 +174,7 @@ namespace C6 { namespace UI
     m_rectangle_ps = m_d3.createPixelShader(resource("rectangle_ps.bin"));
     m_sprite_gs = m_d3.createGeometryShader(resource("sprite_gs.bin"));
     m_sprite_ps = m_d3.createPixelShader(resource("sprite_ps.bin"));
+    m_texture_vs = m_d3.createVertexShader(resource("texture_vs.bin"));
 
     m_noise_srv = m_d3.createShaderResourceView(Essence::Graphics::LoadTexture(m_d3, resourceFile("noise.rgt")));
 
@@ -306,6 +308,13 @@ namespace C6 { namespace UI
     };
 
     static_assert(sizeof(TextCommandAux) <= sizeof(DC::Command), "TextCommandAux too big.");
+
+    struct TextureCommandAux
+    {
+      ID3D10ShaderResourceView* texture;
+    };
+
+    static_assert(sizeof(TextureCommandAux) <= sizeof(DC::Command), "TextureCommandAux too big.");
   }
 
   void DC::text(float z, const D2D_RECT_F& rect, uint32_t colour, Fonts::E font, const wchar_t* text)
@@ -318,6 +327,14 @@ namespace C6 { namespace UI
     cmd->colour = colour;
     auto aux = reinterpret_cast<TextCommandAux*>(m_command_buffer + cmd->aux_command_index);
     aux->text = text;
+  }
+
+  void DC::texture(float z, const D2D_RECT_F& rect, ID3D10ShaderResourceView* texture, uint32_t colour)
+  {
+    auto cmd = allocateCommand(z, CMD::Texture, rect);
+    cmd->colour = colour;
+    auto aux = reinterpret_cast<TextureCommandAux*>(m_command_buffer + cmd->aux_command_index);
+    aux->texture = texture;
   }
 
   void DC::rectangle(float z, const D2D_RECT_F& rect, uint32_t colour)
@@ -496,6 +513,7 @@ namespace C6 { namespace UI
       {
       case CMD::Rectangle: evaluateRectangles(begin, end); break;
       case CMD::Text: evaluateTexts(begin, end); break;
+      case CMD::Texture: evaluateTextures(begin, end); break;
       case CMD::Sprite: evaluateSprites(begin, end); break;
       }
       first = last;
@@ -528,6 +546,22 @@ namespace C6 { namespace UI
     m_d3.GSSetShader(m_sprite_gs);
     m_d3.PSSetShader(m_sprite_ps);
     m_d3.draw(static_cast<unsigned int>(end - begin), static_cast<unsigned int>(begin - m_command_buffer));
+  }
+
+  void DC::evaluateTextures(Command* begin, Command* end)
+  {
+    m_d3.IASetInputLayout(m_rectangle_il);
+    m_d3.IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_POINTLIST);
+    m_d3.VSSetShader(m_texture_vs);
+    m_d3.GSSetShader(m_sprite_gs);
+    m_d3.PSSetShader(m_sprite_ps);
+    for(auto cmd = begin; cmd != end; ++cmd)
+    {
+      auto aux = reinterpret_cast<TextureCommandAux*>(m_command_buffer + cmd->aux_command_index);
+      m_d3.getRawInterface()->PSSetShaderResources(0, 1, &aux->texture);
+      m_d3.draw(1, static_cast<unsigned int>(cmd - m_command_buffer));
+    }
+    m_d3.PSSetShaderResources(0, m_sprite_srv);
   }
 
   void DC::evaluateTexts(Command* begin, Command* end)

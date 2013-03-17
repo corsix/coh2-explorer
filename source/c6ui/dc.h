@@ -41,6 +41,7 @@ namespace C6 { namespace UI
     void rectangleV(float z, const D2D_RECT_F& rect, uint32_t colour_top, uint32_t colour_bottom);
     auto rectangleOutline(float z, const D2D_RECT_F& rect, uint32_t colour) -> D2D_RECT_F;
     void sprite(float z, const D2D_RECT_F& rect, Sprites::E which, uint32_t colour = 0xFFFFFFFFUL);
+    void texture(float z, const D2D_RECT_F& rect, ID3D10ShaderResourceView* texture, uint32_t colour = 0xFFFFFFFFUL);
     void transform(float dx, float dy, float dz);
 
     D3D10_VIEWPORT pushCustomViewport(D2D_RECT_F rect);
@@ -73,6 +74,7 @@ namespace C6 { namespace UI
     void flushCommands();
     void evaluateRectangles(Command* begin, Command* end);
     void evaluateTexts(Command* begin, Command* end);
+    void evaluateTextures(Command* begin, Command* end);
     void evaluateSprites(Command* begin, Command* end);
 
     bool canDraw();
@@ -112,6 +114,7 @@ namespace C6 { namespace UI
     C6::D3::PixelShader m_sprite_ps;
     C6::D3::ShaderResourceView m_sprite_srv;
     C6::D3::SamplerState m_sprite_sampler;
+    C6::D3::VertexShader m_texture_vs;
     D3D10_VIEWPORT m_viewport;
     float m_scale_factor;
   };
