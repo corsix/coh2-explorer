@@ -64,6 +64,7 @@ namespace C6 { namespace UI
   ScrollingContainer::ScrollingContainer(Arena& arena, ScrollableWindow* content)
     : m_content(content)
     , m_bars_visible(-1)
+    , m_alignment(0.f)
   {
     auto content_size = size(content->m_position);
     m_content_size = D2D1::SizeF(content_size.x, content_size.y);
@@ -71,6 +72,11 @@ namespace C6 { namespace UI
     appendChild(content);
     appendChild(m_bottom = arena.allocTrivial<ScrollBar>(D2D1::Point2F(1.f, 0.f), content->m_position.left, content->m_position.right, m_content_size.width));
     appendChild(m_right  = arena.allocTrivial<ScrollBar>(D2D1::Point2F(0.f, 1.f), content->m_position.top, content->m_position.bottom, m_content_size.height));
+  }
+
+  void ScrollingContainer::setAlignment(float alignment)
+  {
+    m_alignment = alignment;
   }
 
   void ScrollingContainer::resized()
@@ -198,7 +204,10 @@ namespace C6 { namespace UI
 
   void ScrollBar::clampScrollOffset()
   {
-    m_scroll_offset = (std::min)(0.f, (std::max)(m_scroll_offset, m_viewport_length - m_content_length));
+    if(m_viewport_length > m_content_length)
+      m_scroll_offset = (m_viewport_length - m_content_length) * static_cast<ScrollingContainer*>(m_parent)->getAlignment();
+    else
+      m_scroll_offset = (std::min)(0.f, (std::max)(m_scroll_offset, m_viewport_length - m_content_length));
     m_thumb_center = m_initial_margin + floor(m_shaft_length * -m_scroll_offset / (m_content_length - m_viewport_length) + .5f);
   }
 

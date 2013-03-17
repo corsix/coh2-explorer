@@ -52,6 +52,8 @@ namespace C6 { namespace UI
     ScrollingContainer(Arena& arena, ScrollableWindow* content);
     void setContentSize(D2D_SIZE_F content_size);
     auto getContentSize() -> const D2D_SIZE_F& {return m_content_size;}
+    void setAlignment(float alignment);
+    auto getAlignment() const -> float { return m_alignment; }
 
     void resized() override;
     void onMouseWheel(D2D_POINT_2F delta) override;
@@ -66,5 +68,6 @@ namespace C6 { namespace UI
     ScrollBar* m_bottom;
     ScrollBar* m_right;
     int m_bars_visible;
+    float m_alignment;
   };
 }}
