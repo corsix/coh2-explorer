@@ -7,10 +7,12 @@
 #include "c6ui/tab_control.h"
 #include "texture_loader.h"
 #include "texture_panel.h"
+#include "png.h"
 using namespace C6::UI;
 
 MainWindow::MainWindow(C6::UI::Factories& factories, const char* module_file, const char* rgm_path)
   : Frame("CoH2 Explorer", factories)
+  , m_wic_factory(factories.wic)
   , m_essence(nullptr)
 {
   m_background_colour = 0xFF282828;
@@ -43,6 +45,15 @@ void MainWindow::resized()
   m_layout->resized();
 }
 
+void MainWindow::setContentTexture(C6::D3::Texture2D texture)
+{
+  auto srv = m_essence->getDevice().createShaderResourceView(std::move(texture));
+  std::unique_ptr<Arena> a(new Arena);
+  auto panel = a->alloc<TexturePanel>(std::move(srv))->wrapInScrollingContainer(*a);
+  panel->setAlignment(.5f);
+  setContent(panel, move(a));
+}
+
 void MainWindow::onFileTreeActivation(std::string path)
 {
   std::string extension;
@@ -60,12 +71,11 @@ void MainWindow::onFileTreeActivation(std::string path)
   {
     if(extension == "rgt")
     {
-      auto& device = m_essence->getDevice();
-      auto texture = device.createShaderResourceView(Essence::Graphics::LoadTexture(device, m_mod_fs->readFile(path)));
-      std::unique_ptr<Arena> a(new Arena);
-      auto panel = a->alloc<TexturePanel>(std::move(texture))->wrapInScrollingContainer(*a);
-      panel->setAlignment(.5f);
-      setContent(panel, move(a));
+      setContentTexture(Essence::Graphics::LoadTexture(m_essence->getDevice(), m_mod_fs->readFile(path)));
+    }
+    else if(extension == "png")
+    {
+      setContentTexture(LoadPng(m_essence->getDevice(), m_wic_factory, m_mod_fs->readFile(path)));
     }
     else
     {

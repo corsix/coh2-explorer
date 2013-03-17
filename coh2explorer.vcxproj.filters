@@ -117,6 +117,9 @@
     <ClCompile Include="source\texture_panel.cpp">
       <Filter>Source Files\ui</Filter>
     </ClCompile>
+    <ClCompile Include="source\png.cpp">
+      <Filter>Source Files\util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\c6ui\dc.h">
@@ -205,6 +208,9 @@
     </ClInclude>
     <ClInclude Include="source\texture_panel.h">
       <Filter>Header Files\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\png.h">
+      <Filter>Header Files\util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

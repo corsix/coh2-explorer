@@ -16,6 +16,7 @@ public:
 
 private:
   void onFileTreeActivation(std::string path) override;
+  void setContentTexture(C6::D3::Texture2D texture);
   void setContent(C6::UI::Window* content, std::unique_ptr<Arena> arena);
 
   Arena m_arena;
@@ -23,5 +24,6 @@ private:
   Essence::Graphics::Panel* m_essence;
   C6::UI::Window* m_layout;
   C6::UI::Window* m_active_content;
+  C6::WIC::ImagingFactory& m_wic_factory;
   std::unique_ptr<Arena> m_active_content_arena;
 };
