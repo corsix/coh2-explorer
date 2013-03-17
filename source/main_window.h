@@ -16,9 +16,12 @@ public:
 
 private:
   void onFileTreeActivation(std::string path) override;
+  void setContent(C6::UI::Window* content, std::unique_ptr<Arena> arena);
 
   Arena m_arena;
   Essence::FileSource* m_mod_fs;
   Essence::Graphics::Panel* m_essence;
   C6::UI::Window* m_layout;
+  C6::UI::Window* m_active_content;
+  std::unique_ptr<Arena> m_active_content_arena;
 };
