@@ -19,53 +19,26 @@
     <Filter Include="Source Files\c6ui">
       <UniqueIdentifier>{dd7f56c5-b1d3-4c49-a606-ec68b4bedf82}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\essence">
+      <UniqueIdentifier>{3bcf6ad1-c40e-4e20-94b4-02a28576d7b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\essence">
+      <UniqueIdentifier>{eb9c584d-8ba2-4a16-a3c0-3049bec2fc3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\util">
+      <UniqueIdentifier>{462b6549-42cf-42ed-b7bf-6b66fbc0ed03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\util">
+      <UniqueIdentifier>{d7b4de92-56d5-41d2-a104-205c3b849576}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ui">
+      <UniqueIdentifier>{706f0362-d2a3-4c5b-a64c-0e26e7eb927c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ui">
+      <UniqueIdentifier>{9a85b667-2bb6-4453-a289-c46a93bca681}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\app.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\main_window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\arena.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\hash.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\mappable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\fs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\fs_archive.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\fs_mod.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\chunky.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\texture_loader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\shader_db.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\model.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\essence_panel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\file_tree.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\presized_arena.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\c6ui\dc.cpp">
       <Filter>Source Files\c6ui</Filter>
     </ClCompile>
@@ -90,62 +63,59 @@
     <ClCompile Include="source\c6ui\app_thunk.cpp">
       <Filter>Source Files\c6ui</Filter>
     </ClCompile>
-    <ClCompile Include="source\win32.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\c6ui\column_layout.cpp">
       <Filter>Source Files\c6ui</Filter>
     </ClCompile>
+    <ClCompile Include="source\chunky.cpp">
+      <Filter>Source Files\essence</Filter>
+    </ClCompile>
+    <ClCompile Include="source\fs.cpp">
+      <Filter>Source Files\essence</Filter>
+    </ClCompile>
+    <ClCompile Include="source\fs_archive.cpp">
+      <Filter>Source Files\essence</Filter>
+    </ClCompile>
+    <ClCompile Include="source\fs_mod.cpp">
+      <Filter>Source Files\essence</Filter>
+    </ClCompile>
+    <ClCompile Include="source\hash.cpp">
+      <Filter>Source Files\essence</Filter>
+    </ClCompile>
+    <ClCompile Include="source\model.cpp">
+      <Filter>Source Files\essence</Filter>
+    </ClCompile>
+    <ClCompile Include="source\shader_db.cpp">
+      <Filter>Source Files\essence</Filter>
+    </ClCompile>
+    <ClCompile Include="source\texture_loader.cpp">
+      <Filter>Source Files\essence</Filter>
+    </ClCompile>
+    <ClCompile Include="source\arena.cpp">
+      <Filter>Source Files\util</Filter>
+    </ClCompile>
+    <ClCompile Include="source\mappable.cpp">
+      <Filter>Source Files\util</Filter>
+    </ClCompile>
+    <ClCompile Include="source\presized_arena.cpp">
+      <Filter>Source Files\util</Filter>
+    </ClCompile>
+    <ClCompile Include="source\win32.cpp">
+      <Filter>Source Files\util</Filter>
+    </ClCompile>
+    <ClCompile Include="source\app.cpp">
+      <Filter>Source Files\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="source\essence_panel.cpp">
+      <Filter>Source Files\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="source\file_tree.cpp">
+      <Filter>Source Files\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="source\main_window.cpp">
+      <Filter>Source Files\ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\main_window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\directx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\arena.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\hash.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\mappable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\fs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\fs_archive_structs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\chunky.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\texture_loader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\shader_db.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\model.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\essence_panel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\file_tree.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\math.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\arena_var_tem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\presized_arena.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="source\c6ui\dc.h">
       <Filter>Header Files\c6ui</Filter>
     </ClInclude>
@@ -170,14 +140,62 @@
     <ClInclude Include="source\c6ui\app.h">
       <Filter>Header Files\c6ui</Filter>
     </ClInclude>
-    <ClInclude Include="source\win32.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\containers.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="source\c6ui\column_layout.h">
       <Filter>Header Files\c6ui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\chunky.h">
+      <Filter>Header Files\essence</Filter>
+    </ClInclude>
+    <ClInclude Include="source\fs.h">
+      <Filter>Header Files\essence</Filter>
+    </ClInclude>
+    <ClInclude Include="source\fs_archive_structs.h">
+      <Filter>Header Files\essence</Filter>
+    </ClInclude>
+    <ClInclude Include="source\hash.h">
+      <Filter>Header Files\essence</Filter>
+    </ClInclude>
+    <ClInclude Include="source\model.h">
+      <Filter>Header Files\essence</Filter>
+    </ClInclude>
+    <ClInclude Include="source\shader_db.h">
+      <Filter>Header Files\essence</Filter>
+    </ClInclude>
+    <ClInclude Include="source\texture_loader.h">
+      <Filter>Header Files\essence</Filter>
+    </ClInclude>
+    <ClInclude Include="source\arena.h">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="source\arena_var_tem.h">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="source\containers.h">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="source\directx.h">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="source\mappable.h">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="source\math.h">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="source\presized_arena.h">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="source\win32.h">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="source\essence_panel.h">
+      <Filter>Header Files\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\file_tree.h">
+      <Filter>Header Files\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\main_window.h">
+      <Filter>Header Files\ui</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
