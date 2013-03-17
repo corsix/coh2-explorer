@@ -61,6 +61,28 @@ namespace C6 { namespace UI
     return m_container = arena.allocTrivial<ScrollingContainer>(arena, this);
   }
 
+  std::unique_ptr<DragHandler> ScrollableWindow::createDragViewport()
+  {
+    auto container = m_container;
+    if(container && container->areScrollBarsInUse())
+    {
+      return SimpleDragHandler(*this, container->getScroll(), [=](D2D_POINT_2F new_pos)
+      {
+        container->scrollTo(new_pos);
+      });
+    }
+    else
+      return nullptr;
+  }
+
+  std::unique_ptr<DragHandler> ScrollableWindow::onMouseDown(D2D_POINT_2F position, MouseButton::E button)
+  {
+    if(auto handler = createDragViewport())
+      return move(handler);
+    else
+      return __super::onMouseDown(position, button);
+  }
+
   ScrollingContainer::ScrollingContainer(Arena& arena, ScrollableWindow* content)
     : m_content(content)
     , m_bars_visible(-1)
@@ -163,6 +185,18 @@ namespace C6 { namespace UI
     refresh();
   }
 
+  D2D_POINT_2F ScrollingContainer::getScroll() const
+  {
+    return D2D1::Point2F(m_bottom->getScroll(), m_right->getScroll());
+  }
+
+  void ScrollingContainer::scrollTo(D2D_POINT_2F point)
+  {
+    m_bottom->scrollTo(point.x);
+    m_right->scrollTo(point.y);
+    refresh();
+  }
+
   void ScrollingContainer::onKeyDown(int vk)
   {
     auto delta = D2D1::Point2F();
@@ -254,6 +288,12 @@ namespace C6 { namespace UI
   void ScrollBar::scrollBy(float delta)
   {
     m_scroll_offset += floor(delta + .5f);
+    clampScrollOffset();
+  }
+
+  void ScrollBar::scrollTo(float pos)
+  {
+    m_scroll_offset = floor(pos + .5f);
     clampScrollOffset();
   }
 

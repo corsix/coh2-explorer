@@ -36,7 +36,7 @@ namespace C6 { namespace UI
       return nullptr;
     }
     else
-      return __super::onMouseDown(position, button);
+      return static_cast<TreeControl*>(m_parent)->createDragViewport();
   }
 
   Cursor::E TreeItem::onMouseEnter()

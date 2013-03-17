@@ -14,6 +14,10 @@ namespace C6 { namespace UI
     std::unique_ptr<DragHandler> onMouseDown(D2D_POINT_2F position, MouseButton::E button) override;
     Cursor::E onMouseEnter() override;
 
+    float getScroll() const { return m_scroll_offset; }
+    void scrollBy(float delta);
+    void scrollTo(float pos);
+
   private:
     D2D_POINT_2F m_axis;
     float& m_scroll_offset;
@@ -27,7 +31,6 @@ namespace C6 { namespace UI
 
     void render(DC& dc) override;
 
-    void scrollBy(float delta);
     void clampScrollOffset();
     void recalcuatePosition(float shaft_size, float final_margin);
     friend class ScrollingContainer;
@@ -39,6 +42,8 @@ namespace C6 { namespace UI
     ScrollableWindow();
     ScrollingContainer* wrapInScrollingContainer(Arena& arena);
 
+    std::unique_ptr<DragHandler> createDragViewport();
+    std::unique_ptr<DragHandler> onMouseDown(D2D_POINT_2F position, MouseButton::E button) override;
   protected:
     ScrollingContainer* m_container;
 
@@ -54,6 +59,9 @@ namespace C6 { namespace UI
     auto getContentSize() -> const D2D_SIZE_F& {return m_content_size;}
     void setAlignment(float alignment);
     auto getAlignment() const -> float { return m_alignment; }
+    bool areScrollBarsInUse() const { return m_bars_visible != 0; }
+    auto getScroll() const -> D2D_POINT_2F;
+    void scrollTo(D2D_POINT_2F point);
 
     void resized() override;
     void onMouseWheel(D2D_POINT_2F delta) override;
