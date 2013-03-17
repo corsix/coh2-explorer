@@ -1,5 +1,7 @@
+#define _USE_MATH_DEFINES
 #include "essence_panel.h"
 #include "shader_db.h"
+#include "model.h"
 
 namespace
 {
@@ -64,12 +66,12 @@ namespace
 
 namespace Essence { namespace Graphics
 {
-
-  Panel::Panel(wxWindow *parent, wxWindowID winid, FileSource* mod_fs)
-    : Direct3DPanel(parent, winid)
+  Panel::Panel(C6::UI::Factories& factories, FileSource* mod_fs)
+    : m_device(factories.d3)
+    , m_camera_angle(0)
+    , m_camera_height(2.f)
   {
-    auto device = getDevice();
-    setDepthFormat(DXGI_FORMAT_D24_UNORM_S8_UINT);
+    auto& device = m_device;
 
     initWorldMatrixBuffer();
     initInstanceInfoBuffer();
@@ -80,13 +82,53 @@ namespace Essence { namespace Graphics
 
     m_shaders = m_arena.alloc<ShaderDatabase>(&m_arena, mod_fs, device);
     initShaderVariables();
+    updateCamera();
+  }
 
-    Bind(wxEVT_SIZE, [=](wxSizeEvent& e) {
-      auto size = e.GetSize();
-      ***m_proj = static_cast<float>(size.GetHeight()) / static_cast<float>(size.GetWidth());
-      m_shaders->variablesUpdated();
-      e.Skip();
-    });
+  Panel::~Panel()
+  {
+  }
+
+  void Panel::resized()
+  {
+    ***m_proj = static_cast<float>(m_position.bottom - m_position.top) / static_cast<float>(m_position.right - m_position.left);
+    m_shaders->variablesUpdated();
+    refresh();
+  }
+
+  void Panel::setModel(FileSource* mod_fs, const std::string& path)
+  {
+    setModel(std::unique_ptr<Model>(new Model(mod_fs, getShaders(), mod_fs->readFile(path), getDevice())));
+  }
+
+  void Panel::setModel(std::unique_ptr<Model> model)
+  {
+    m_model = move(model);
+
+    m_model_size = 1.f;
+    for(auto mesh : m_model->getMeshes())
+    {
+      auto& bvol = mesh->getBoundingVolume();
+      const float x = bvol.center.x + bvol.size.x;
+      const float y = bvol.center.y + bvol.size.y;
+      const float z = bvol.center.z + bvol.size.z;
+      const float size = sqrt(x*x + y*y + z*z);
+      if(m_model_size < size)
+        m_model_size = size;
+    }
+
+    updateCamera();
+  }
+
+  void Panel::updateCamera()
+  {
+    float a = (static_cast<float>(m_camera_angle) / 16.f) * static_cast<float>(M_PI);
+    float dist = m_model_size / (1.f + abs(m_camera_height - 2.f) * 0.1f);
+    Essence::Graphics::vector3_t eye = {cos(a) * dist, m_camera_height, sin(a) * dist};
+    Essence::Graphics::vector3_t at = {0.f, (m_camera_height - 2.f) * 0.01f, 0.f};
+    lookAtFrom(at, eye);
+    getShaders()->variablesUpdated();
+    refresh();
   }
 
   void Panel::initWorldMatrixBuffer()
@@ -123,6 +165,25 @@ namespace Essence { namespace Graphics
     SetDebugObjectName(m_instance_info_buffer, "Instance info buffer");
   }
 
+  void Panel::onMouseWheel(D2D_POINT_2F delta)
+  {
+    m_camera_height += static_cast<float>(delta.y);
+    updateCamera();
+  }
+
+  void Panel::onKeyDown(int vk)
+  {
+    int dir;
+    switch(vk)
+    {
+    case VK_LEFT: dir = 1; break;
+    case VK_RIGHT: dir = -1; break;
+    default: __super::onKeyDown(vk); return;
+    }
+    m_camera_angle += dir;
+    updateCamera();
+  }
+
   static void Normalise(vector3_t& v)
   {
     float len = sqrt(v.x*v.x + v.y*v.y + v.z*v.z);
@@ -152,11 +213,17 @@ namespace Essence { namespace Graphics
     m_shaders->variablesUpdated();
   }
 
-  void Panel::startRendering()
+  void Panel::render(C6::UI::DC& dc)
   {
-    Direct3DPanel::startRendering();
+    dc.rectangle(0.f, m_position, 0xFF0F0F0F);
+    auto old_viewport = dc.pushCustomViewport(m_position);
+
     auto device = getDevice();
 
+    ID3D10DepthStencilView* dsv;
+    device.getRawInterface()->OMGetRenderTargets(0, nullptr, &dsv);
+    device.clearDepthStencilView(C6::D3::DepthStencilView(dsv), D3D10_CLEAR_DEPTH | D3D10_CLEAR_STENCIL, 1.f, 0);
+    
     device.VSSetConstantBuffers(2, m_world_matrix_buffer);
     device.VSSetConstantBuffers(3, m_instance_info_buffer);
     device.PSSetShaderResources(TextureSlot::EnvMapDiffuse, m_white_cube);
@@ -170,6 +237,11 @@ namespace Essence { namespace Graphics
     device.PSSetShaderResources(TextureSlot::snowEdgeNoiseTexture, m_black);
     device.PSSetShaderResources(TextureSlot::compositorDiffuseTexture, m_black);
     device.PSSetShaderResources(TextureSlot::compositorSpecularTexture, m_grey);
+
+    if(m_model)
+      m_model->render(device);
+
+    dc.restoreViewport(old_viewport);
   }
 
   template <size_t N>

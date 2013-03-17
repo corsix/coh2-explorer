@@ -80,8 +80,16 @@
   <ItemGroup>
     <ClCompile Include="source\app.cpp" />
     <ClCompile Include="source\arena.cpp" />
+    <ClCompile Include="source\c6ui\app_thunk.cpp" />
+    <ClCompile Include="source\c6ui\column_layout.cpp" />
+    <ClCompile Include="source\c6ui\dc.cpp" />
+    <ClCompile Include="source\c6ui\frame.cpp" />
+    <ClCompile Include="source\c6ui\mouse.cpp" />
+    <ClCompile Include="source\c6ui\scrolling_container.cpp" />
+    <ClCompile Include="source\c6ui\tab_control.cpp" />
+    <ClCompile Include="source\c6ui\tree_control.cpp" />
+    <ClCompile Include="source\c6ui\window.cpp" />
     <ClCompile Include="source\chunky.cpp" />
-    <ClCompile Include="source\directx.cpp" />
     <ClCompile Include="source\essence_panel.cpp" />
     <ClCompile Include="source\file_tree.cpp" />
     <ClCompile Include="source\fs.cpp" />
@@ -94,11 +102,23 @@
     <ClCompile Include="source\presized_arena.cpp" />
     <ClCompile Include="source\shader_db.cpp" />
     <ClCompile Include="source\texture_loader.cpp" />
+    <ClCompile Include="source\win32.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="source\arena.h" />
     <ClInclude Include="source\arena_var_tem.h" />
+    <ClInclude Include="source\c6ui\app.h" />
+    <ClInclude Include="source\c6ui\column_layout.h" />
+    <ClInclude Include="source\c6ui\dc.h" />
+    <ClInclude Include="source\c6ui\frame.h" />
+    <ClInclude Include="source\c6ui\mouse.h" />
+    <ClInclude Include="source\c6ui\scrolling_container.h" />
+    <ClInclude Include="source\c6ui\tab_control.h" />
+    <ClInclude Include="source\c6ui\tree_control.h" />
+    <ClInclude Include="source\c6ui\window.h" />
     <ClInclude Include="source\chunky.h" />
+    <ClInclude Include="source\containers.h" />
     <ClInclude Include="source\directx.h" />
     <ClInclude Include="source\essence_panel.h" />
     <ClInclude Include="source\file_tree.h" />
@@ -112,7 +132,19 @@
     <ClInclude Include="source\presized_arena.h" />
     <ClInclude Include="source\shader_db.h" />
     <ClInclude Include="source\texture_loader.h" />
-    <ClInclude Include="source\wx.h" />
+    <ClInclude Include="source\win32.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\noise.rgt" />
+    <None Include="resources\rectangle_gs.bin" />
+    <None Include="resources\rectangle_ps.bin" />
+    <None Include="resources\rectangle_vs.bin" />
+    <None Include="resources\sprites.rgt" />
+    <None Include="resources\sprite_gs.bin" />
+    <None Include="resources\sprite_ps.bin" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="c6ui.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

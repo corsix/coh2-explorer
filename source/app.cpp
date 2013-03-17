@@ -1,40 +1,39 @@
-#include "wx.h"
+#include "c6ui/app.h"
 #include "main_window.h"
+#include "containers.h"
 #include <wx/cmdline.h>
-namespace
+#include <vector>
+using namespace std;
+
+namespace C6 { namespace UI
 {
-
-class coh2explorer : public wxApp
-{
-public:
-  bool OnInit() override
+  vector<string> FetchCommandLine()
   {
-    if(!wxApp::OnInit())
-      return false;
+    vector<string> result;
+    int argc;
+    auto argv = CommandLineToArgvW(GetCommandLineW(), &argc);
+    
+    vector<char> buf;
+    for(auto arg : make_range(argv, argv + argc))
+    {
+      auto len = static_cast<int>(wcslen(arg));
+      for(size_t i = 0; i < 2; ++i)
+        buf.resize(WideCharToMultiByte(CP_THREAD_ACP, 0, arg, len, buf.data(), buf.size() * i, nullptr, nullptr));
+      result.push_back(string(buf.begin(), buf.end()));
+    }
 
-    auto window = new MainWindow(m_module_path.c_str(), m_rgm_path.c_str());
-    return window->Show();
+    LocalFree(argv);
+    return result;
+  }
+  
+  void CreateInitialWindow(Factories& factories)
+  {
+    auto args = FetchCommandLine();
+
+    if(args.size() < 2)
+      throw std::runtime_error("Usage: " + args.at(0) + " <.module file path> [.rgm file path]");
+
+    auto window = new MainWindow(factories, args[1].c_str(), args.size() >= 2 ? args[2].c_str() : nullptr);
   }
 
-  void OnInitCmdLine(wxCmdLineParser& parser) override
-  {
-    parser.AddParam("<.module file path>");
-    parser.AddParam("<.rgm file path>", wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL);
-  }
-
-  bool OnCmdLineParsed(wxCmdLineParser& parser) override
-  {
-    m_module_path = parser.GetParam(0);
-    if(parser.GetParamCount() > 1)
-      m_rgm_path = parser.GetParam(1);
-    return true;
-  }
-
-private:
-  wxString m_module_path;
-  wxString m_rgm_path;
-};
-
-wxIMPLEMENT_APP(coh2explorer);
-
-} // anonymous namespace
+}}

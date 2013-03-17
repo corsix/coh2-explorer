@@ -95,7 +95,7 @@ class ArenaArray
 public:
   ArenaArray(Arena* arena, uint32_t size)
     : m_size(size)
-    , m_elements(arena->mallocArray<T>(size))
+    , m_elements(size ? arena->mallocArray<T>(size) : nullptr)
   {
   }
 

@@ -13,15 +13,18 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\c6ui">
+      <UniqueIdentifier>{09b60302-3e44-43fd-9006-491b5cbc4e32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\c6ui">
+      <UniqueIdentifier>{dd7f56c5-b1d3-4c49-a606-ec68b4bedf82}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\app.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\main_window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\directx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\arena.cpp">
@@ -63,11 +66,38 @@
     <ClCompile Include="source\presized_arena.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\c6ui\dc.cpp">
+      <Filter>Source Files\c6ui</Filter>
+    </ClCompile>
+    <ClCompile Include="source\c6ui\frame.cpp">
+      <Filter>Source Files\c6ui</Filter>
+    </ClCompile>
+    <ClCompile Include="source\c6ui\mouse.cpp">
+      <Filter>Source Files\c6ui</Filter>
+    </ClCompile>
+    <ClCompile Include="source\c6ui\scrolling_container.cpp">
+      <Filter>Source Files\c6ui</Filter>
+    </ClCompile>
+    <ClCompile Include="source\c6ui\tab_control.cpp">
+      <Filter>Source Files\c6ui</Filter>
+    </ClCompile>
+    <ClCompile Include="source\c6ui\tree_control.cpp">
+      <Filter>Source Files\c6ui</Filter>
+    </ClCompile>
+    <ClCompile Include="source\c6ui\window.cpp">
+      <Filter>Source Files\c6ui</Filter>
+    </ClCompile>
+    <ClCompile Include="source\c6ui\app_thunk.cpp">
+      <Filter>Source Files\c6ui</Filter>
+    </ClCompile>
+    <ClCompile Include="source\win32.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\c6ui\column_layout.cpp">
+      <Filter>Source Files\c6ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\wx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="source\main_window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -116,5 +146,69 @@
     <ClInclude Include="source\presized_arena.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\c6ui\dc.h">
+      <Filter>Header Files\c6ui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\c6ui\frame.h">
+      <Filter>Header Files\c6ui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\c6ui\mouse.h">
+      <Filter>Header Files\c6ui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\c6ui\scrolling_container.h">
+      <Filter>Header Files\c6ui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\c6ui\tab_control.h">
+      <Filter>Header Files\c6ui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\c6ui\tree_control.h">
+      <Filter>Header Files\c6ui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\c6ui\window.h">
+      <Filter>Header Files\c6ui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\c6ui\app.h">
+      <Filter>Header Files\c6ui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\win32.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\containers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\c6ui\column_layout.h">
+      <Filter>Header Files\c6ui</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\noise.rgt">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resources\sprites.rgt">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resources\rectangle_gs.bin">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resources\rectangle_ps.bin">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resources\rectangle_vs.bin">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resources\sprite_gs.bin">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resources\sprite_ps.bin">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="c6ui.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

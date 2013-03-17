@@ -13,6 +13,9 @@ public:
   MappedMemory& operator= (nullptr_t);
   ~MappedMemory();
 
+  size_t size() const { return static_cast<size_t>(end - begin); }
+  const uint8_t* data() const { return begin; }
+
   const uint8_t* const begin;
   const uint8_t* const end;
 

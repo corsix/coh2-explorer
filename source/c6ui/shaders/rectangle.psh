@@ -1,0 +1,16 @@
+struct ps_t
+{
+  float4 colour : C;
+  float4 colour_secondary : S;
+  float4 tex_coord : T;
+  float4 pos : SV_POSITION;
+};
+
+sampler NoiseSampler : register(s1);
+Texture2D NoiseTex : register(t1); 
+
+float4 main(ps_t p) : SV_TARGET
+{
+  float uv = saturate(p.tex_coord.z + p.tex_coord.w * NoiseTex.Sample(NoiseSampler, p.tex_coord.xy / float2(128, 128)).r);
+  return lerp(p.colour, p.colour_secondary, uv);
+}

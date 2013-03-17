@@ -1,34 +1,24 @@
 #pragma once
-#include "wx.h"
 #include "fs.h"
-#include <wx/treectrl.h>
+#include "c6ui/tree_control.h"
 
-class FileTree : public wxPanel
+class FileTreeListener
 {
 public:
-  FileTree(wxWindow* parent, wxWindowID winid, Essence::FileSource* mod_fs);
-
-private:
-  void populateChildren(wxTreeItemId parent, const std::string& path);
-
-  Essence::FileSource* m_mod_fs;
-  wxTreeCtrl* m_tree;
+  virtual void onFileTreeActivation(std::string path) = 0;
 };
 
-class FileTreeEvent : public wxCommandEvent
+class FileTree : public C6::UI::TreeControl
 {
 public:
-  FileTreeEvent(wxEventType eventType, int winid, wxString filename, std::string path, Essence::FileSource* mod_fs);
+  FileTree(Arena& arena, C6::UI::DC& dc, Essence::FileSource* mod_fs);
 
-  wxEvent* Clone() const override;
-  const std::string& getPath() const;
-  Essence::FileSource* getFileSource() const;
-  const wxString& getFileName() const;
+  void addListener(FileTreeListener* listener);
+  void fireActivation(std::string path);
+
+  Essence::FileSource* getFileSource() { return m_mod_fs; }
 
 private:
-  wxString m_filename;
-  std::string m_path;
   Essence::FileSource* m_mod_fs;
+  FileTreeListener* m_listener;
 };
-
-wxDECLARE_EVENT(FILE_TREE_FILE_ACTIVATED, FileTreeEvent);

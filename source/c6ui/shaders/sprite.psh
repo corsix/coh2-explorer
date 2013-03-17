@@ -1,0 +1,14 @@
+struct ps_t
+{
+  float2 tex_coord : T;
+  float4 colour : C;
+  float4 pos : SV_POSITION;
+};
+
+sampler SpriteSampler : register(s0);
+Texture2D SpriteTex : register(t0); 
+
+float4 main(ps_t p) : SV_TARGET
+{
+  return SpriteTex.Sample(SpriteSampler, p.tex_coord.xy) * p.colour;
+}
