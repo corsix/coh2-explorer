@@ -143,6 +143,9 @@ namespace C6 { namespace UI
 
     case WM_NCDESTROY:
       m_factories.d3.clearState();
+#ifdef _DEBUG
+      this->~Frame();
+#endif
       PostQuitMessage(0);
       break;
     }

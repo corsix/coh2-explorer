@@ -7,7 +7,7 @@ namespace C6 { namespace UI
   {
   public:
     Frame(const char* title, Factories& factories);
-    ~Frame();
+    virtual ~Frame();
 
     HWND getHwnd() { return m_hwnd; }
     DC& getDC() { return m_dc; }
