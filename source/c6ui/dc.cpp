@@ -106,11 +106,15 @@ namespace C6 { namespace UI
     , m_dy(0.f)
     , m_dz(0.f)
   {
+#ifdef C6UI_NO_TEXT
+    m_scale_factor = 1.f;
+#else
     auto dpi = factories.d2.getDesktopDpi();
     m_scale_factor = sqrt(std::get<0>(dpi) * std::get<1>(dpi)) / 96.f;
 
     m_tfmt[Fonts::Headings] = createFont(DWRITE_FONT_WEIGHT_BOLD, DWRITE_FONT_STRETCH_SEMI_EXPANDED);
     m_tfmt[Fonts::Body]     = createFont(DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STRETCH_NORMAL);
+#endif
 
     D3D10_BLEND_DESC blend_state = {0};
     blend_state.BlendEnable[0] = TRUE;
@@ -206,7 +210,11 @@ namespace C6 { namespace UI
 
   bool DC::canDraw()
   {
+#ifdef C6UI_NO_TEXT
+    return m_dsv;
+#else
     return m_rt;
+#endif
   }
 
   void DC::acquireSwapChain(C6::D2::Factory& d2, C6::DXGI::SwapChain swapchain)
@@ -226,12 +234,14 @@ namespace C6 { namespace UI
     cbuf[3] = 1.f;
     m_cbuf.unmap();
 
+#ifndef C6UI_NO_TEXT
     m_rt = d2.createDxgiSurfaceRenderTarget(swapchain.getBuffer<DXGI::Surface>(0),
       D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_DEFAULT, D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED)));
     m_rt.setAntialiasMode(D2D1_ANTIALIAS_MODE_PER_PRIMITIVE);
 
     if(!m_brush)
       m_brush = m_rt.createSolidColorBrush(D2D1::ColorF(0));
+#endif
   }
 
   void DC::unlockSwapChain()
@@ -319,6 +329,7 @@ namespace C6 { namespace UI
 
   void DC::text(float z, const D2D_RECT_F& rect, uint32_t colour, Fonts::E font, const wchar_t* text)
   {
+#ifndef C6UI_NO_TEXT
     auto clip = getClipRectangle();
     if(rect.right <= clip.left || rect.left >= clip.right || rect.bottom <= clip.top || rect.top >= clip.bottom)
       return;
@@ -327,6 +338,7 @@ namespace C6 { namespace UI
     cmd->colour = colour;
     auto aux = reinterpret_cast<TextCommandAux*>(m_command_buffer + cmd->aux_command_index);
     aux->text = text;
+#endif
   }
 
   void DC::texture(float z, const D2D_RECT_F& rect, ID3D10ShaderResourceView* texture, uint32_t colour)
@@ -435,8 +447,12 @@ namespace C6 { namespace UI
 
   D2D_SIZE_F DC::measureText(Fonts::E font, const wchar_t* text)
   {
+#ifdef C6UI_NO_TEXT
+    return D2D1::SizeF(wcslen(text) * 4.f, 12.f);
+#else
     auto metrics = m_dw.createTextLayout(NullTerminated(text), m_tfmt[font]).getMetrics();
     return D2D1::SizeF(metrics.width, metrics.height);
+#endif
   }
 
   static const float blend_factor[4] = {0};

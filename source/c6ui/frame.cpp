@@ -13,7 +13,11 @@ namespace C6 { namespace UI
     , m_current_hover(this)
     , m_factories(factories)
   {
+#ifdef C6UI_NO_TEXT
+    auto dpi = std::make_tuple(96.f, 96.f);
+#else
     auto dpi = m_factories.d2.getDesktopDpi();
+#endif
     m_position.left = 0.f;
     m_position.top = 0.f;
     m_position.right = ceil(800.f * std::get<0>(dpi) / 96.f);
@@ -219,7 +223,6 @@ namespace C6 { namespace UI
   {
     RECT rect;
     GetClientRect(m_hwnd, &rect);
-    auto dpi = m_factories.d2.getDesktopDpi();
     m_position.right = static_cast<float>(rect.right);
     m_position.bottom = static_cast<float>(rect.bottom);
 
@@ -271,16 +274,20 @@ namespace C6 { namespace UI
 
   void Frame::setTextRenderingParams()
   {
+#ifndef C6UI_NO_TEXT
     auto params = m_factories.dw.createMonitorRenderingParams(m_hmonitor);
     params = m_factories.dw.createCustomRenderingParams(params.getGamma(), params.getEnhancedContrast(), 1.f, params.getPixelGeometry(), DWRITE_RENDERING_MODE_CLEARTYPE_NATURAL);
     m_dc.setTextRenderingParams(params);
+#endif
   }
 
   void Frame::onPaint()
   {
     RECT rect;
+#ifndef C6UI_NO_TEXT
     if(!m_factories.d2)
       return;
+#endif
     if(!GetUpdateRect(m_hwnd, &rect, FALSE))
       return;
 

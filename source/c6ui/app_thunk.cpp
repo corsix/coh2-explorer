@@ -14,6 +14,7 @@ namespace C6 { namespace UI
   static void InstantiateFactories(Factories& factories)
   {
     HRESULT hr;
+#ifndef C6UI_NO_TEXT
     {
       ID2D1Factory* d2;
       hr = ::D2D1CreateFactory(D2D1_FACTORY_TYPE_MULTI_THREADED, &d2);
@@ -26,6 +27,7 @@ namespace C6 { namespace UI
       if(!SUCCEEDED(hr)) throw COMException(hr, "DWriteCreateFactory");
       factories.dw = DW::Factory(static_cast<IDWriteFactory*>(dw));
     }
+#endif
     {
       void* wic;
       hr = ::CoCreateInstance(CLSID_WICImagingFactory1, nullptr, CLSCTX_INPROC_SERVER, __uuidof(IWICImagingFactory), &wic);

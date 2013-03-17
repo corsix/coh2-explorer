@@ -49,12 +49,17 @@ namespace C6 { namespace UI
       rect.bottom = (std::min)(rect.bottom + ancestor->m_position.top, ancestor->m_position.bottom);
     }
 
-    RECT rc;
+    RECT rc, *prc;
     rc.left = static_cast<LONG>(floor(rect.left));
     rc.top = static_cast<LONG>(floor(rect.top));
     rc.right = static_cast<LONG>(ceil(rect.right));
     rc.bottom = static_cast<LONG>(ceil(rect.bottom));
-    InvalidateRect(static_cast<Frame*>(ancestor)->getHwnd(), &rc, FALSE);
+#ifdef C6UI_NO_TEXT
+    prc = NULL;
+#else
+    prc = &rc;
+#endif
+    InvalidateRect(static_cast<Frame*>(ancestor)->getHwnd(), prc, FALSE);
   }
 
   void Window::onKeyDown(int vk)
