@@ -69,7 +69,7 @@ void MainWindow::onFileTreeActivation(std::string path)
 
   try
   {
-    if(extension == "rgt")
+    if(extension == "rgt" || extension == "tga")
     {
       setContentTexture(Essence::Graphics::LoadTexture(m_essence->getDevice(), m_mod_fs->readFile(path)));
     }
