@@ -133,15 +133,15 @@ namespace
     auto tfmt = reinterpret_cast<const dxtc_tfmt_t*>(tfmt_chunk->getContents());
 
     DXGI_FORMAT format;
-    uint32_t ratio;
+    uint32_t ratio = 4;
     switch(tfmt->compression)
     {
-    case 13: format = DXGI_FORMAT_BC1_UNORM_SRGB; ratio = 2; break;
-    case 14: format = DXGI_FORMAT_BC2_UNORM_SRGB; ratio = 4; break;
-    case 15: format = DXGI_FORMAT_BC3_UNORM_SRGB; ratio = 4; break;
-    case 22: format = DXGI_FORMAT_BC1_UNORM     ; ratio = 2; break;
-    case 23: format = DXGI_FORMAT_BC2_UNORM     ; ratio = 4; break;
-    case 24: format = DXGI_FORMAT_BC3_UNORM     ; ratio = 4; break;
+    case 13: format = DXGI_FORMAT_BC1_UNORM_SRGB; break;
+    case 14: format = DXGI_FORMAT_BC2_UNORM_SRGB; break;
+    case 15: format = DXGI_FORMAT_BC3_UNORM_SRGB; break;
+    case 22: format = DXGI_FORMAT_BC1_UNORM     ; break;
+    case 23: format = DXGI_FORMAT_BC2_UNORM     ; break;
+    case 24: format = DXGI_FORMAT_BC3_UNORM     ; break;
     default:
       if(tfmt->compression >> 16 == 0xC600)
       {
