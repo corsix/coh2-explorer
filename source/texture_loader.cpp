@@ -246,6 +246,79 @@ namespace
     throw runtime_error("TODO: Implement DDS loading.");
   }
 
+  class CpuId
+  {
+  public:
+    CpuId()
+    {
+      int info[4] = {0};
+      __cpuid(info, 1);
+      has_ssse3 = (info[2] & 0x100) != 0;
+    }
+
+    bool has_ssse3;
+  } const cpuid;
+
+  void Convert24To32_SSSE3(__m128i* dst, const __m128i* src, size_t num_iterations)
+  {
+    const auto alpha = _mm_set1_epi32(0xFF000000UL);
+    const auto shuffle = _mm_set_epi8(-1, 15, 14, 13, -1, 12, 11, 10, -1, 9, 8, 7, -1, 6, 5, 4);
+
+    do
+    {
+      const auto src0 = _mm_load_si128(src);
+      const auto src1 = _mm_load_si128(src + 1);
+      const auto src2 = _mm_load_si128(src + 2);
+      src += 3;
+
+      _mm_store_si128(dst, _mm_or_si128(_mm_shuffle_epi8(_mm_slli_si128(src0, 4), shuffle), alpha));
+      _mm_store_si128(dst + 1, _mm_or_si128(_mm_shuffle_epi8(_mm_alignr_epi8(src1, src0, 8), shuffle), alpha));
+      _mm_store_si128(dst + 2, _mm_or_si128(_mm_shuffle_epi8(_mm_alignr_epi8(src2, src1, 4), shuffle), alpha));
+      _mm_store_si128(dst + 3, _mm_or_si128(_mm_shuffle_epi8(src2, shuffle), alpha));
+      dst += 4;
+    } while(--num_iterations);
+  }
+
+  template <typename T>
+  bool is_aligned(T* ptr)
+  {
+    return (reinterpret_cast<uintptr_t>(ptr) & 0xF) == 0;
+  }
+
+  uint8_t* Convert24To32(uint8_t* dst, const uint8_t* src, size_t num_bytes)
+  {
+    // Increment dst by at most 15, so that dst's and src's 16-byte-alignments will be in phase.
+    auto phase_delta = ((reinterpret_cast<uintptr_t>(src) & 3) * 4) & 15;
+    dst = reinterpret_cast<uint8_t*>(((reinterpret_cast<uintptr_t>(dst) + phase_delta + 15) & ~static_cast<uintptr_t>(15)) - phase_delta);
+
+    auto dst_base = dst;
+    while(num_bytes >= 4)
+    {
+      *reinterpret_cast<uint32_t*>(dst) = 0xFF000000UL | *reinterpret_cast<const uint32_t*>(src);
+      src += 3;
+      dst += 4;
+      num_bytes -= 3;
+
+      if(cpuid.has_ssse3 && is_aligned(src) && num_bytes >= 48)
+      {
+        auto num_iterations = num_bytes / 48;
+        Convert24To32_SSSE3(reinterpret_cast<__m128i*>(dst), reinterpret_cast<const __m128i*>(src), num_iterations);
+        src += num_iterations * 48;
+        dst += num_iterations * 64;
+        num_bytes -= num_iterations * 48;
+      }
+    }
+    if(num_bytes == 3)
+    {
+      dst[0] = src[0];
+      dst[1] = src[1];
+      dst[2] = src[2];
+      dst[3] = 0xFF;
+    }
+
+    return dst_base;
+  }
+
   Texture2D LoadTGA(Device1& d3, unique_ptr<MappableFile> file)
   {
     runtime_assert(file->getSize() >= sizeof(tga_header_t), "TGA file is too small.");
@@ -253,8 +326,6 @@ namespace
     auto& header = *reinterpret_cast<const tga_header_t*>(mapped.begin);
     if(header.image_type != 2)
       throw runtime_error("Only truecolour TGA files are supported.");
-    if(header.depth != 32)
-      throw runtime_error("Only 32bpp TGA files are supported.");
 
     size_t predata_size = sizeof(tga_header_t) + header.id_length;
     if(header.colour_map_type)
@@ -269,7 +340,20 @@ namespace
 
     D3D10_SUBRESOURCE_DATA contents;
     contents.pSysMem = mapped.begin + predata_size;
-    contents.SysMemPitch = header.width * (header.depth / 8);
+    contents.SysMemPitch = header.width * 4;
+
+    unique_ptr<uint8_t[]> buf;
+    switch(header.depth)
+    {
+    case 24:
+      buf.reset(new uint8_t[contents.SysMemPitch * header.height + 15]);
+      contents.pSysMem = Convert24To32(buf.get(), static_cast<const uint8_t*>(contents.pSysMem), data_size);
+      break;
+    case 32:
+      break;
+    default:
+      throw runtime_error("Only 24bpp and 32bpp TGA files are supported.");
+    }
 
     return d3.createTexture2D(desc, contents);
   }
