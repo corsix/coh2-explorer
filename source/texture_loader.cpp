@@ -319,19 +319,54 @@ namespace
     return dst_base;
   }
 
+  void DecompressRLE(uint8_t* dst, const uint8_t* src, size_t pixel_size, size_t num_pixels)
+  {
+    while(num_pixels)
+    {
+      auto head = *src++;
+      auto count = static_cast<size_t>(1 + (head & 0x7F));
+      if(count > num_pixels)
+        throw runtime_error("Invalid RLE data.");
+      num_pixels -= count;
+
+      if(static_cast<int8_t>(head) < 0)
+      {
+        if(pixel_size == 4)
+        {
+          __stosd(reinterpret_cast<unsigned long*>(dst), *reinterpret_cast<const unsigned long*>(src), count);
+          dst += 4 * count;
+        }
+        else
+        {
+          do
+          {
+            __movsb(dst, src, pixel_size);
+            dst += pixel_size;
+          } while(--count);
+        }
+        src += pixel_size;
+      }
+      else
+      {
+        count *= pixel_size;
+        memcpy(dst, src, count);
+        src += count;
+        dst += count;
+      }
+    }
+  }
+
   Texture2D LoadTGA(Device1& d3, unique_ptr<MappableFile> file)
   {
     runtime_assert(file->getSize() >= sizeof(tga_header_t), "TGA file is too small.");
     auto mapped = file->mapAll();
     auto& header = *reinterpret_cast<const tga_header_t*>(mapped.begin);
-    if(header.image_type != 2)
+    if((header.image_type & 0xF7) != 2)
       throw runtime_error("Only truecolour TGA files are supported.");
 
     size_t predata_size = sizeof(tga_header_t) + header.id_length;
     if(header.colour_map_type)
       predata_size += header.palette_size * (header.palette_bpp / 8);
-    size_t data_size = header.width * header.height * (header.depth / 8);
-    runtime_assert(file->getSize() >= predata_size + data_size, "TGA file is missing image data.");
 
     DefaultTextureDesc desc;
     desc.Width = header.width;
@@ -341,6 +376,19 @@ namespace
     D3D10_SUBRESOURCE_DATA contents;
     contents.pSysMem = mapped.begin + predata_size;
     contents.SysMemPitch = header.width * 4;
+
+    size_t data_size = header.width * header.height * (header.depth / 8);
+    unique_ptr<uint8_t[]> rle_buf;
+    if(header.image_type & 8)
+    {
+      rle_buf.reset(new uint8_t[data_size]);
+      DecompressRLE(rle_buf.get(), static_cast<const uint8_t*>(contents.pSysMem), header.depth / 8, header.width * header.height);
+      contents.pSysMem = rle_buf.get();
+    }
+    else
+    {
+      runtime_assert(file->getSize() >= predata_size + data_size, "TGA file is missing image data.");
+    }
 
     unique_ptr<uint8_t[]> buf;
     switch(header.depth)
@@ -363,17 +411,25 @@ namespace
     runtime_assert(file->getSize() >= 32, "File is too small to be a texture.");
 
     const char rgt_head[] = "Relic Chunky\x0D\x0A\x1A";
-    auto sig = file->map(0, sizeof(rgt_head));
+    auto sig = file->map(0, (std::max)(sizeof(rgt_head), sizeof(tga_header_t)));
     if(memcmp(sig.begin, rgt_head, sizeof(rgt_head)) == 0)
       return LoadChunky;
 
     if(memcmp(sig.begin, "DDS ", 4) == 0)
       return LoadDDS;
 
+    bool tga_is_possible = false;
+    auto tga_header = reinterpret_cast<const tga_header_t*>(sig.begin);
+    if(tga_header->colour_map_type <= 1 && tga_header->image_type <= 11 && (tga_header->depth & 7) == 0)
+      tga_is_possible = true;
+
     auto size = file->getSize();
     const char tga_tail[] = "TRUEVISION-XFILE.";
     sig = file->map(size - sizeof(tga_tail), size);
     if(memcmp(sig.begin, tga_tail, sizeof(tga_tail)) == 0)
+      return LoadTGA;
+
+    if(tga_is_possible)
       return LoadTGA;
 
     throw runtime_error("Unrecognised texture file format.");
