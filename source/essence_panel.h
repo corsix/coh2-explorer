@@ -19,6 +19,7 @@ namespace Essence { namespace Graphics
 
     void setModel(FileSource* mod_fs, const std::string& path);
     void setModel(std::unique_ptr<Model> model);
+    void setObjectVisibility(bool* object_visibility);
     void lookAtFrom(vector3_t at, vector3_t eye);
     auto getShaders() -> ShaderDatabase* { return m_shaders; }
     auto getDevice() -> C6::D3::Device1& { return m_device; }

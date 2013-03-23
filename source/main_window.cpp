@@ -9,6 +9,7 @@
 #include "texture_panel.h"
 #include "png.h"
 #include "lighting_properties.h"
+#include "object_tree.h"
 using namespace C6::UI;
 
 MainWindow::MainWindow(C6::UI::Factories& factories, const char* module_file, const char* rgm_path)
@@ -30,15 +31,14 @@ MainWindow::MainWindow(C6::UI::Factories& factories, const char* module_file, co
   m_essence = m_arena.alloc<Essence::Graphics::Panel>(factories, m_mod_fs);
   m_active_content = m_essence;
   m_layout->appendChild(m_essence);
-  auto& device = factories.d3;
+
+  m_property_tabs = m_arena.allocTrivial<TabControl>();
+  m_layout->appendChild(m_property_tabs);
+  m_essence_lighting_properties = m_arena.alloc<Essence::Graphics::LightingProperties>(m_arena, getDC(), *m_essence);
+  m_property_tabs->appendTab(m_arena, L"Lighting", m_essence_lighting_properties->wrapInScrollingContainer(m_arena));
+
   if(*rgm_path)
     onFileTreeActivation(rgm_path);
-
-  auto sidebar_tab = m_arena.allocTrivial<TabControl>();
-  m_layout->appendChild(sidebar_tab);
-  m_essence_lighting_properties = m_arena.alloc<Essence::Graphics::LightingProperties>(m_arena, getDC(), *m_essence);
-  sidebar_tab->appendTab(m_arena, L"Lighting", m_essence_lighting_properties->wrapInScrollingContainer(m_arena));
-
   ShowWindow(getHwnd(), SW_MAXIMIZE);
   resized();
 }
@@ -58,6 +58,8 @@ void MainWindow::setContentTexture(C6::D3::Texture2D texture)
   std::unique_ptr<Arena> a(new Arena);
   auto panel = a->alloc<TexturePanel>(std::move(srv), m_essence_lighting_properties->getExposure())->wrapInScrollingContainer(*a);
   panel->setAlignment(.5f);
+  m_property_tabs->removeAllTabs();
+  m_property_tabs->appendTab(*a, L"Lighting", m_essence_lighting_properties->getContainer());
   setContent(panel, move(a));
 }
 
@@ -86,8 +88,10 @@ void MainWindow::onFileTreeActivation(std::string path)
     }
     else
     {
+      std::unique_ptr<Arena> arena(new Arena);
       m_essence->setModel(m_mod_fs, path);
-      setContent(m_essence, nullptr);
+      createModelPropertiesUI(*arena);
+      setContent(m_essence, move(arena));
     }
   }
   catch(const std::exception& e)
@@ -96,6 +100,38 @@ void MainWindow::onFileTreeActivation(std::string path)
     MessageBoxA(getHwnd(), msg.c_str(), "Exception", MB_ICONEXCLAMATION);
     return;
   }
+}
+
+void MainWindow::createModelPropertiesUI(Arena& arena)
+{
+  class Listener : public C6::UI::PropertyListener
+  {
+  public:
+    Listener(Essence::Graphics::Panel& panel)
+      : m_panel(panel)
+    {
+    }
+
+    void onPropertyChanged() override
+    {
+      m_panel.refresh();
+    }
+
+  private:
+    Essence::Graphics::Panel& m_panel;
+  };
+
+  auto active = m_property_tabs->getActiveCaption();
+  m_property_tabs->removeAllTabs();
+
+  auto object_visibility = arena.mallocArray<bool>(m_essence->getModel()->getObjects().size());
+  auto objects_tab = arena.alloc<ObjectTree>(arena, getDC(), *m_essence->getModel(), object_visibility);
+  objects_tab->addListener(arena.allocTrivial<Listener>(*m_essence));
+  m_essence->setObjectVisibility(object_visibility);
+
+  m_property_tabs->appendTab(arena, L"Objects", objects_tab->wrapInScrollingContainer(arena));
+  m_property_tabs->appendTab(arena, L"Lighting", m_essence_lighting_properties->getContainer());
+  m_property_tabs->setActiveCaption(move(active));
 }
 
 void MainWindow::setContent(C6::UI::Window* content, std::unique_ptr<Arena> arena)

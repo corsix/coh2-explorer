@@ -91,6 +91,11 @@ namespace Essence { namespace Graphics
   {
   }
 
+  void Panel::setObjectVisibility(bool* object_visibility)
+  {
+    m_object_visibility = object_visibility;
+  }
+
   void Panel::resized()
   {
     ***m_proj = static_cast<float>(m_position.bottom - m_position.top) / static_cast<float>(m_position.right - m_position.left);
@@ -106,6 +111,7 @@ namespace Essence { namespace Graphics
   void Panel::setModel(std::unique_ptr<Model> model)
   {
     m_model = move(model);
+    m_object_visibility = nullptr;
 
     m_model_size = 1.f;
     for(auto mesh : m_model->getMeshes())
@@ -241,7 +247,7 @@ namespace Essence { namespace Graphics
     device.PSSetShaderResources(TextureSlot::compositorSpecularTexture, m_grey);
 
     if(m_model)
-      m_model->render(device);
+      m_model->render(device, m_object_visibility);
 
     dc.restoreViewport(old_viewport);
   }

@@ -65,6 +65,7 @@ namespace Essence { namespace Graphics
     auto render(C6::D3::Device1& d3, const bool* object_visibility = nullptr) -> const bool*;
     auto getBoundingVolume() const -> const bounding_volume_t&;
     auto getObjects() -> const ArenaArray<Object*>& { return m_objects; }
+    auto getName() -> const std::string& { return m_name; }
 
   private:
     void loadDataData5(const Chunk* datadata, ModelLoadContext& ctx);
