@@ -48,6 +48,7 @@ namespace Essence { namespace Graphics
     Object(unsigned int index_count);
     static void readIndices(ChunkReader& r, uint16_t*& destination);
 
+    auto getName() const -> const ChunkyString* { return m_name; }
     void render(C6::D3::Device1& d3);
 
   private:
@@ -61,8 +62,9 @@ namespace Essence { namespace Graphics
   public:
     Mesh(const Chunk* foldmesh, ModelLoadContext& ctx);
 
-    void render(C6::D3::Device1& d3);
-    const bounding_volume_t& getBoundingVolume() const;
+    auto render(C6::D3::Device1& d3, const bool* object_visibility = nullptr) -> const bool*;
+    auto getBoundingVolume() const -> const bounding_volume_t&;
+    auto getObjects() -> const ArenaArray<Object*>& { return m_objects; }
 
   private:
     void loadDataData5(const Chunk* datadata, ModelLoadContext& ctx);
@@ -88,8 +90,9 @@ namespace Essence { namespace Graphics
   public:
     Model(FileSource* mod_fs, ShaderDatabase* shaders, std::unique_ptr<MappableFile> rgm_file, C6::D3::Device1& d3);
 
-    void render(C6::D3::Device1& d3);
+    void render(C6::D3::Device1& d3, const bool* object_visibility = nullptr);
     auto getMeshes() -> const ArenaArray<Mesh*>& { return m_meshes; }
+    auto getObjects() -> std::vector<Object*>;
 
   private:
     void collectMeshes(const Chunk* foldmesh, std::vector<const Chunk*>& meshes);

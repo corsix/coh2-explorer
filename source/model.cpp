@@ -368,15 +368,15 @@ namespace Essence { namespace Graphics
     });
   }
 
-  void Model::render(Device1& d3)
+  void Model::render(Device1& d3, const bool* object_visibility)
   {
-    for_each(m_meshes.begin(), m_meshes.end(), [&](Mesh* mesh)
+    for(auto mesh : m_meshes)
     {
-      mesh->render(d3);
-    });
+      object_visibility = mesh->render(d3, object_visibility);
+    }
   }
 
-  void Mesh::render(Device1& d3)
+  const bool* Mesh::render(Device1& d3, const bool* object_visibility)
   {
     const unsigned int vertex_offset = 0;
     d3.IASetIndexBuffer(m_indices, DXGI_FORMAT_R16_UINT, 0);
@@ -386,20 +386,36 @@ namespace Essence { namespace Graphics
 
     auto tech = m_material->apply(d3);
     const auto num_passes = tech.getNumPasses();
-    for(unsigned int i = 0; i < num_passes; ++i)
+    for(unsigned int pass = 0; pass < num_passes; ++pass)
     {
-      tech.getPass(i)->apply(d3);
-      m_material->applyVariablesForPass(d3, i);
-      for_each(m_objects.begin(), m_objects.end(), [&](Object* object)
+      tech.getPass(pass)->apply(d3);
+      m_material->applyVariablesForPass(d3, pass);
+      int index = 0;
+      for(auto object : m_objects)
       {
+        if(object_visibility && !object_visibility[index++])
+          continue;
+
         object->render(d3);
-      });
+      }
     }
+    return object_visibility ? (object_visibility + m_objects.size()) : nullptr;
   }
 
   void Object::render(Device1& d3)
   {
     d3.drawIndexed(m_index_count, m_first_index, 0);
+  }
+
+  vector<Object*> Model::getObjects()
+  {
+    vector<Object*> result;
+    for(auto mesh : m_meshes)
+    {
+      for(auto object : mesh->getObjects())
+        result.push_back(object);
+    }
+    return result;
   }
 
 } }
