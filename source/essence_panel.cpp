@@ -175,14 +175,14 @@ namespace Essence { namespace Graphics
 
   void Panel::onKeyDown(int vk)
   {
-    int dir;
     switch(vk)
     {
-    case VK_LEFT: dir = 1; break;
-    case VK_RIGHT: dir = -1; break;
+    case VK_LEFT:  ++m_camera_angle ; break;
+    case VK_RIGHT: --m_camera_angle ; break;
+    case VK_UP:    ++m_camera_height; break;
+    case VK_DOWN:  --m_camera_height; break;
     default: __super::onKeyDown(vk); return;
     }
-    m_camera_angle += dir;
     updateCamera();
   }
 
