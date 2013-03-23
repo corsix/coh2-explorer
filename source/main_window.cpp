@@ -39,6 +39,7 @@ MainWindow::MainWindow(C6::UI::Factories& factories, const char* module_file, co
   m_essence_lighting_properties = m_arena.alloc<Essence::Graphics::LightingProperties>(m_arena, getDC(), *m_essence);
   sidebar_tab->appendTab(m_arena, L"Lighting", m_essence_lighting_properties->wrapInScrollingContainer(m_arena));
 
+  ShowWindow(getHwnd(), SW_MAXIMIZE);
   resized();
 }
 
