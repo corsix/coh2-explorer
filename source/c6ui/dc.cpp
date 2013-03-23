@@ -349,6 +349,20 @@ namespace C6 { namespace UI
     aux->texture = texture;
   }
 
+  void DC::alphaPattern(float z, const D2D_RECT_F& rect)
+  {
+    rectangle(z, rect, 0xFF000000);
+    z += .125f;
+    float yd = 5.f;
+    for(float x = rect.left; x < rect.right; x += 5.f, yd = 5.f - yd)
+    {
+      for(float y = rect.top + yd; y < rect.bottom; y += 10.f)
+      {
+        rectangle(z, D2D1::RectF(x, y, (std::min)(x + 5.f, rect.right), (std::min)(y + 5.f, rect.bottom)), 0xFFFFFFFF);
+      }
+    }
+  }
+
   void DC::rectangle(float z, const D2D_RECT_F& rect, uint32_t colour)
   {
     rectangleH(z, rect, colour, colour);

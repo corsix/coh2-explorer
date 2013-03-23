@@ -37,6 +37,7 @@ namespace C6 { namespace UI
 
     void text(float z, const D2D_RECT_F& rect, uint32_t colour, Fonts::E font, const wchar_t* text);
     void rectangle(float z, const D2D_RECT_F& rect, uint32_t colour);
+    void alphaPattern(float z, const D2D_RECT_F& rect);
     void rectangleH(float z, const D2D_RECT_F& rect, uint32_t colour_left, uint32_t colour_right);
     void rectangleV(float z, const D2D_RECT_F& rect, uint32_t colour_top, uint32_t colour_bottom);
     auto rectangleOutline(float z, const D2D_RECT_F& rect, uint32_t colour) -> D2D_RECT_F;
