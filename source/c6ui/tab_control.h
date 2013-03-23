@@ -9,6 +9,7 @@ namespace C6 { namespace UI
   public:
     TabControl();
     void appendTab(Arena& arena, const wchar_t* title, Window* contents);
+    void removeAllTabs();
 
     Window* getActiveContents();
     void setActiveContents(Window* contents);

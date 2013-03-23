@@ -92,6 +92,13 @@ namespace C6 { namespace UI
     refresh();
   }
 
+  void TabControl::removeAllTabs()
+  {
+    for(auto child : *ex(this))
+      child->m_parent = nullptr;
+    m_first_child = m_last_child = nullptr;
+  }
+
   void TabControl::appendTab(Arena& arena, const wchar_t* title, Window* contents)
   {
     auto tab = ex(arena.allocTrivial<Tab>(getDC(), title, contents));
