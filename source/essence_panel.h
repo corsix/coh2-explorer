@@ -22,6 +22,7 @@ namespace Essence { namespace Graphics
     void lookAtFrom(vector3_t at, vector3_t eye);
     auto getShaders() -> ShaderDatabase* { return m_shaders; }
     auto getDevice() -> C6::D3::Device1& { return m_device; }
+    auto getModel() -> Model* { return &*m_model; }
 
     void onKeyDown(int vk) override;
     void onMouseWheel(D2D_POINT_2F delta) override;
@@ -45,6 +46,7 @@ namespace Essence { namespace Graphics
     matrix44_t* m_view;
     matrix44_t* m_proj;
     vector3_t* m_eye_position;
+    bool* m_object_visibility;
     
     void initWorldMatrixBuffer();
     void initInstanceInfoBuffer();

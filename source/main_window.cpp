@@ -8,6 +8,7 @@
 #include "texture_loader.h"
 #include "texture_panel.h"
 #include "png.h"
+#include "lighting_properties.h"
 using namespace C6::UI;
 
 MainWindow::MainWindow(C6::UI::Factories& factories, const char* module_file, const char* rgm_path)
@@ -32,6 +33,10 @@ MainWindow::MainWindow(C6::UI::Factories& factories, const char* module_file, co
   auto& device = factories.d3;
   if(*rgm_path)
     onFileTreeActivation(rgm_path);
+
+  auto sidebar_tab = m_arena.allocTrivial<TabControl>();
+  m_layout->appendChild(sidebar_tab);
+  sidebar_tab->appendTab(m_arena, L"Lighting", m_arena.alloc<Essence::Graphics::LightingProperties>(m_arena, getDC(), *m_essence)->wrapInScrollingContainer(m_arena));
 
   resized();
 }

@@ -2,6 +2,7 @@
 #include "essence_panel.h"
 #include "shader_db.h"
 #include "model.h"
+#include "lighting_properties.h"
 
 namespace
 {
@@ -70,6 +71,7 @@ namespace Essence { namespace Graphics
     : m_device(factories.d3)
     , m_camera_angle(0)
     , m_camera_height(2.f)
+    , m_object_visibility(nullptr)
   {
     auto& device = m_device;
 
@@ -215,7 +217,7 @@ namespace Essence { namespace Graphics
 
   void Panel::render(C6::UI::DC& dc)
   {
-    dc.rectangle(0.f, m_position, 0xFF0F0F0F);
+    dc.rectangle(0.f, m_position, m_background_colour);
     auto old_viewport = dc.pushCustomViewport(m_position);
 
     auto device = getDevice();
@@ -365,6 +367,7 @@ namespace Essence { namespace Graphics
     m_shaders->getVariable("g_trackmapsize", 16);
 
     set("teamcolour", 0.f, 0.f, 0.f, .4f);
+    set("(c6ui_background)", .125f, .125f, .125f, 1.f);
 #undef set
 #undef var
   }

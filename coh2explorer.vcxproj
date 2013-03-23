@@ -85,6 +85,7 @@
     <ClCompile Include="source\c6ui\dc.cpp" />
     <ClCompile Include="source\c6ui\frame.cpp" />
     <ClCompile Include="source\c6ui\mouse.cpp" />
+    <ClCompile Include="source\c6ui\properties.cpp" />
     <ClCompile Include="source\c6ui\scrolling_container.cpp" />
     <ClCompile Include="source\c6ui\tab_control.cpp" />
     <ClCompile Include="source\c6ui\tree_control.cpp" />
@@ -96,6 +97,7 @@
     <ClCompile Include="source\fs_archive.cpp" />
     <ClCompile Include="source\fs_mod.cpp" />
     <ClCompile Include="source\hash.cpp" />
+    <ClCompile Include="source\lighting_properties.cpp" />
     <ClCompile Include="source\main_window.cpp" />
     <ClCompile Include="source\mappable.cpp" />
     <ClCompile Include="source\model.cpp" />
@@ -115,6 +117,7 @@
     <ClInclude Include="source\c6ui\dc.h" />
     <ClInclude Include="source\c6ui\frame.h" />
     <ClInclude Include="source\c6ui\mouse.h" />
+    <ClInclude Include="source\c6ui\properties.h" />
     <ClInclude Include="source\c6ui\scrolling_container.h" />
     <ClInclude Include="source\c6ui\tab_control.h" />
     <ClInclude Include="source\c6ui\tree_control.h" />
@@ -127,6 +130,7 @@
     <ClInclude Include="source\fs.h" />
     <ClInclude Include="source\fs_archive_structs.h" />
     <ClInclude Include="source\hash.h" />
+    <ClInclude Include="source\lighting_properties.h" />
     <ClInclude Include="source\main_window.h" />
     <ClInclude Include="source\mappable.h" />
     <ClInclude Include="source\math.h" />
