@@ -58,6 +58,7 @@ namespace C6 { namespace UI
 
   ScrollingContainer* ScrollableWindow::wrapInScrollingContainer(Arena& arena)
   {
+    resized();
     return m_container = arena.allocTrivial<ScrollingContainer>(arena, this);
   }
 
@@ -92,8 +93,8 @@ namespace C6 { namespace UI
     m_content_size = D2D1::SizeF(content_size.x, content_size.y);
 
     appendChild(content);
-    appendChild(m_bottom = arena.allocTrivial<ScrollBar>(D2D1::Point2F(1.f, 0.f), content->m_position.left, content->m_position.right, m_content_size.width));
-    appendChild(m_right  = arena.allocTrivial<ScrollBar>(D2D1::Point2F(0.f, 1.f), content->m_position.top, content->m_position.bottom, m_content_size.height));
+    appendChild(m_bottom = arena.allocTrivial<ScrollBar>(D2D1::Point2F(1.f, 0.f), content->m_position.left, m_viewport_size.width, m_content_size.width));
+    appendChild(m_right  = arena.allocTrivial<ScrollBar>(D2D1::Point2F(0.f, 1.f), content->m_position.top, m_viewport_size.height, m_content_size.height));
   }
 
   void ScrollingContainer::setAlignment(float alignment)
@@ -123,6 +124,7 @@ namespace C6 { namespace UI
         bars_visible |= 2;
       }
     }
+    m_viewport_size = avail_size;
     float right_width = need_right ? shaft_size : 0.f;
     float bottom_height = need_bottom ? shaft_size : 0.f;
 

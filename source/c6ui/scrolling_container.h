@@ -73,6 +73,7 @@ namespace C6 { namespace UI
   private:
     ScrollableWindow* m_content;
     D2D_SIZE_F m_content_size;
+    D2D_SIZE_F m_viewport_size;
     ScrollBar* m_bottom;
     ScrollBar* m_right;
     int m_bars_visible;
