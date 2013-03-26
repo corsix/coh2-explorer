@@ -10,6 +10,8 @@ namespace C6 { namespace UI
       SliderArrow        = 0x00003732UL,
       TreeArrowCollapsed = 0x0E001830UL,
       TreeArrowExpanded  = 0x14001830UL,
+      CheckboxCleared    = 0x1A003030UL,
+      CheckboxTicked     = 0x26003030UL,
     };
   }
 
