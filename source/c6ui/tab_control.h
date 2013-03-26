@@ -8,8 +8,11 @@ namespace C6 { namespace UI
   {
   public:
     TabControl();
-    void appendTab(Arena& arena, const wchar_t* title, Window* contents);
+    void appendTab(Arena& arena, const wchar_t* caption, Window* contents);
     void removeAllTabs();
+
+    std::wstring getActiveCaption();
+    void setActiveCaption(std::wstring caption);
 
     Window* getActiveContents();
     void setActiveContents(Window* contents);

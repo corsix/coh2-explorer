@@ -8,11 +8,11 @@ namespace C6 { namespace UI
     class Tab : public Window
     {
     public:
-      Tab(DC& dc, const wchar_t* title, Window* contents)
-        : m_title(title)
+      Tab(DC& dc, const wchar_t* caption, Window* contents)
+        : m_caption(caption)
         , m_contents(contents)
       {
-        auto size = dc.measureText(Fonts::Headings, title);
+        auto size = dc.measureText(Fonts::Headings, caption);
         size.height *= 1.3f;
 
         m_position.left = 0.f;
@@ -32,6 +32,16 @@ namespace C6 { namespace UI
       bool isActive()
       {
         return static_cast<TabControl*>(m_parent)->getActiveContents() == m_contents;
+      }
+
+      const wchar_t* getCaption()
+      {
+        return m_caption;
+      }
+
+      Window* getContents()
+      {
+        return m_contents;
       }
 
     protected:
@@ -57,11 +67,11 @@ namespace C6 { namespace UI
         right_edge.left = main_bg.right;
         dc.rectangle(0.125f, right_edge, 0xFF282828);
 
-        dc.text(100.f, main_bg, is_active ? 0xFFE7E7E7 : 0xA6A6A6, Fonts::Headings, m_title);
+        dc.text(100.f, main_bg, is_active ? 0xFFE7E7E7 : 0xA6A6A6, Fonts::Headings, m_caption);
       }
 
     private:
-      const wchar_t* m_title;
+      const wchar_t* m_caption;
       Window* m_contents;
     };
   }
@@ -99,9 +109,35 @@ namespace C6 { namespace UI
     m_first_child = m_last_child = nullptr;
   }
 
-  void TabControl::appendTab(Arena& arena, const wchar_t* title, Window* contents)
+  std::wstring TabControl::getActiveCaption()
   {
-    auto tab = ex(arena.allocTrivial<Tab>(getDC(), title, contents));
+    for(auto child = m_first_child; child != m_last_child; )
+    {
+      auto tab = static_cast<Tab*>(child);
+      if(tab->getContents() == m_last_child)
+        return tab->getCaption();
+      child = ex(tab)->m_next_sibling;
+    }
+    return L"";
+  }
+
+  void TabControl::setActiveCaption(std::wstring caption)
+  {
+    for(auto child = m_first_child; child != m_last_child; )
+    {
+      auto tab = static_cast<Tab*>(child);
+      if(tab->getCaption() == caption)
+      {
+        setActiveContents(tab->getContents());
+        break;
+      }
+      child = ex(tab)->m_next_sibling;
+    }
+  }
+
+  void TabControl::appendTab(Arena& arena, const wchar_t* caption, Window* contents)
+  {
+    auto tab = ex(arena.allocTrivial<Tab>(getDC(), caption, contents));
     appendChild(tab);
 
     float left = 0.f;
