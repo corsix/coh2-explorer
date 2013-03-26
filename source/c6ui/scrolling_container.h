@@ -41,6 +41,7 @@ namespace C6 { namespace UI
   public:
     ScrollableWindow();
     ScrollingContainer* wrapInScrollingContainer(Arena& arena);
+    ScrollingContainer* getContainer() { return m_container; }
 
     std::unique_ptr<DragHandler> createDragViewport();
     std::unique_ptr<DragHandler> onMouseDown(D2D_POINT_2F position, MouseButton::E button) override;
