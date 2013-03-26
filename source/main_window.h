@@ -4,7 +4,11 @@
 #include "arena.h"
 #include "file_tree.h"
 
-namespace Essence { namespace Graphics { class Model; }}
+namespace Essence { namespace Graphics
+{
+  class Model;
+  class LightingProperties;
+}}
 
 class MainWindow : public C6::UI::Frame, private FileTreeListener
 {
@@ -22,6 +26,7 @@ private:
   Arena m_arena;
   Essence::FileSource* m_mod_fs;
   Essence::Graphics::Panel* m_essence;
+  Essence::Graphics::LightingProperties* m_essence_lighting_properties;
   C6::UI::Window* m_layout;
   C6::UI::Window* m_active_content;
   C6::WIC::ImagingFactory& m_wic_factory;

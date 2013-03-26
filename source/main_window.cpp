@@ -36,7 +36,8 @@ MainWindow::MainWindow(C6::UI::Factories& factories, const char* module_file, co
 
   auto sidebar_tab = m_arena.allocTrivial<TabControl>();
   m_layout->appendChild(sidebar_tab);
-  sidebar_tab->appendTab(m_arena, L"Lighting", m_arena.alloc<Essence::Graphics::LightingProperties>(m_arena, getDC(), *m_essence)->wrapInScrollingContainer(m_arena));
+  m_essence_lighting_properties = m_arena.alloc<Essence::Graphics::LightingProperties>(m_arena, getDC(), *m_essence);
+  sidebar_tab->appendTab(m_arena, L"Lighting", m_essence_lighting_properties->wrapInScrollingContainer(m_arena));
 
   resized();
 }
@@ -54,7 +55,7 @@ void MainWindow::setContentTexture(C6::D3::Texture2D texture)
 {
   auto srv = m_essence->getDevice().createShaderResourceView(std::move(texture));
   std::unique_ptr<Arena> a(new Arena);
-  auto panel = a->alloc<TexturePanel>(std::move(srv))->wrapInScrollingContainer(*a);
+  auto panel = a->alloc<TexturePanel>(std::move(srv), m_essence_lighting_properties->getExposure())->wrapInScrollingContainer(*a);
   panel->setAlignment(.5f);
   setContent(panel, move(a));
 }
@@ -119,6 +120,7 @@ void MainWindow::setContent(C6::UI::Window* content, std::unique_ptr<Arena> aren
 
     m_active_content = new_content;
     new_content->resized();
+    m_essence_lighting_properties->setActiveWindow(content);
   }
   m_active_content_arena = move(arena);
 }
