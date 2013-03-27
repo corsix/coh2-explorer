@@ -1,6 +1,7 @@
 #include "lighting_properties.h"
 #include "shader_db.h"
 #include "essence_panel.h"
+#include "hash.h"
 
 namespace
 {

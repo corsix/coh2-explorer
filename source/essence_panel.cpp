@@ -4,6 +4,7 @@
 #include "shader_db.h"
 #include "model.h"
 #include "mappable.h"
+#include "hash.h"
 
 namespace
 {

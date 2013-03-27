@@ -1,7 +1,6 @@
 #pragma once
 #include "directx.h"
 #include "arena.h"
-#include "hash.h"
 #include <memory>
 
 namespace Essence
@@ -10,6 +9,7 @@ namespace Essence
   class ChunkyFile;
   class ChunkReader;
   struct ChunkyString;
+  struct Hashable;
 }
 
 namespace Essence { namespace Graphics
