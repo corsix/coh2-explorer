@@ -10,6 +10,7 @@
 #include "png.h"
 #include "lighting_properties.h"
 #include "object_tree.h"
+#include "c6ui/app.h"
 using namespace C6::UI;
 
 MainWindow::MainWindow(C6::UI::Factories& factories, const char* module_file, const char* rgm_path)

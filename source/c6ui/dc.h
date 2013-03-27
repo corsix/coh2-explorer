@@ -1,8 +1,12 @@
 #pragma once
-#include "app.h"
+#include <nice/d2.h>
+#include <nice/d3.h>
+#include <nice/dw.h>
 
 namespace C6 { namespace UI
 {
+  struct Factories;
+
   namespace Sprites
   {
     enum E : uint32_t

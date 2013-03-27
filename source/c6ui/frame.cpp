@@ -1,6 +1,7 @@
 #include "frame.h"
 #include "win32.h"
 #include "mouse.h"
+#include "app.h"
 #include <WindowsX.h>
 using namespace std;
 

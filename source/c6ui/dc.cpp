@@ -1,4 +1,5 @@
 #include "dc.h"
+#include "app.h"
 #include <algorithm>
 #include "../texture_loader.h"
 #include "../mappable.h"
