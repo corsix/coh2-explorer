@@ -1,4 +1,6 @@
 #include "fs.h"
+#include "mappable.h"
+#include "arena.h"
 #include "hash.h"
 #include <zlib.h>
 #include <Windows.h>

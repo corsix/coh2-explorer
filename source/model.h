@@ -2,6 +2,7 @@
 #include "chunky.h"
 #include "directx.h"
 #include "fs.h"
+#include "arena.h"
 #include "math.h"
 
 namespace Essence { namespace Graphics

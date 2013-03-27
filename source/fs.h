@@ -1,8 +1,10 @@
 #pragma once
-#include "mappable.h"
-#include "arena.h"
 #include <vector>
 #include <string>
+#include <memory>
+
+class Arena;
+class MappableFile;
 
 namespace Essence
 {

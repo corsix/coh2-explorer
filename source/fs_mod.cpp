@@ -1,4 +1,6 @@
 #include "fs.h"
+#include "mappable.h"
+#include "arena.h"
 #include <algorithm>
 #include <map>
 #include <nice/com.h>
