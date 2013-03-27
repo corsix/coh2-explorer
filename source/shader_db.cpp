@@ -514,6 +514,10 @@ namespace Essence { namespace Graphics
     readFxo();
   }
 
+  Effect::~Effect()
+  {
+  }
+
   template <typename T, T* (ShaderDatabaseImpl:: *F)(const uint8_t*, uint32_t)>
   static void ReadSpusDescs(ArenaArray<T*>& arr, ShaderDatabaseImpl& db, ChunkReader& r, uint32_t desc_size)
   {

@@ -1,5 +1,6 @@
 #include "object_tree.h"
 #include "model.h"
+#include "chunky.h"
 #include <regex>
 #include <algorithm>
 #include <unordered_set>

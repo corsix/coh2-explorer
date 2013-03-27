@@ -3,6 +3,7 @@
 #include "essence_panel.h"
 #include "shader_db.h"
 #include "model.h"
+#include "mappable.h"
 #include "lighting_properties.h"
 
 namespace

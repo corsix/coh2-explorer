@@ -80,6 +80,7 @@ namespace Essence { namespace Graphics
   {
   public:
     Effect(ShaderDatabaseImpl& db, const std::string& name);
+    ~Effect();
 
     void apply(C6::D3::Device1& d3);
     Technique& getPrimaryTechnique();

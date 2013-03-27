@@ -1,6 +1,7 @@
 #include "model.h"
 #include "shader_db.h"
 #include "texture_loader.h"
+#include "chunky.h"
 #include <algorithm>
 #include <map>
 using namespace std;
@@ -366,6 +367,10 @@ namespace Essence { namespace Graphics
     {
       return m_arena.alloc<Mesh>(foldmesh, ctx);
     });
+  }
+
+  Model::~Model()
+  {
   }
 
   void Model::render(Device1& d3, const bool* object_visibility)

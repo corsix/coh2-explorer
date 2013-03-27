@@ -1,9 +1,16 @@
 #pragma once
-#include "chunky.h"
 #include "directx.h"
 #include "fs.h"
 #include "arena.h"
 #include "math.h"
+
+namespace Essence
+{
+  class Chunk;
+  class ChunkyFile;
+  class ChunkReader;
+  struct ChunkyString;
+}
 
 namespace Essence { namespace Graphics
 {
@@ -91,6 +98,7 @@ namespace Essence { namespace Graphics
   {
   public:
     Model(FileSource* mod_fs, ShaderDatabase* shaders, std::unique_ptr<MappableFile> rgm_file, C6::D3::Device1& d3);
+    ~Model();
 
     void render(C6::D3::Device1& d3, const bool* object_visibility = nullptr);
     auto getMeshes() -> const ArenaArray<Mesh*>& { return m_meshes; }
