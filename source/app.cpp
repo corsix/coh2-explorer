@@ -1,7 +1,6 @@
 #include "c6ui/app.h"
 #include "main_window.h"
 #include "containers.h"
-#include <wx/cmdline.h>
 #include <vector>
 using namespace std;
 

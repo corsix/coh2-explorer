@@ -4,8 +4,8 @@
 #include "chunky.h"
 #include "arena.h"
 #include "presized_arena.h"
+#include "zlib.h"
 #include <unordered_map>
-#include <zlib.h>
 using namespace std;
 using namespace C6::D3;
 using namespace Essence;
