@@ -1,5 +1,6 @@
 #pragma once
 #include "window.h"
+#include "dc.h"
 
 namespace C6 { namespace UI
 {

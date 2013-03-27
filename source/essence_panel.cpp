@@ -1,4 +1,5 @@
 #define _USE_MATH_DEFINES
+#include "c6ui/dc.h"
 #include "essence_panel.h"
 #include "shader_db.h"
 #include "model.h"

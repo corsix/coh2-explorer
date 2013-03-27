@@ -1,5 +1,6 @@
 #include "scrolling_container.h"
 #include "mouse.h"
+#include "dc.h"
 
 namespace C6 { namespace UI
 {

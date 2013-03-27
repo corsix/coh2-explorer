@@ -4,6 +4,8 @@
 #include "arena.h"
 #include "math.h"
 
+namespace C6 { namespace UI { struct Factories; }}
+
 namespace Essence { class FileSource; }
 
 namespace Essence { namespace Graphics

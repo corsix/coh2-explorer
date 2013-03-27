@@ -1,10 +1,11 @@
 #pragma once
-#include "dc.h"
+#include <nice/d2.h>
 #include <memory>
 
 namespace C6 { namespace UI
 {
   class DragHandler;
+  class DC;
 
   namespace MouseButton
   {

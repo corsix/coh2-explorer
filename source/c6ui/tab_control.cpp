@@ -1,5 +1,7 @@
 #include "tab_control.h"
 #include "mouse.h"
+#include "dc.h"
+#include <string>
 
 namespace C6 { namespace UI
 {

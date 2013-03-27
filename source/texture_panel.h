@@ -1,4 +1,5 @@
 #pragma once
+#include <nice/d3.h>
 #include "c6ui/scrolling_container.h"
 
 class TexturePanel : public C6::UI::ScrollableWindow

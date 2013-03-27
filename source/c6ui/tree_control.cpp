@@ -1,6 +1,7 @@
 #include "tree_control.h"
 #include "mouse.h"
 #include "properties.h"
+#include "dc.h"
 
 #define FLT_LARGE_EXACT 1e7f
 

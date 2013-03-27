@@ -1,4 +1,5 @@
 #include "texture_panel.h"
+#include "c6ui/dc.h"
 
 TexturePanel::TexturePanel(C6::D3::ShaderResourceView texture, const uint32_t& exposure)
   : m_texture(texture)
