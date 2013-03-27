@@ -1,5 +1,6 @@
 #pragma once
 #include "scrolling_container.h"
+#include "../arena.h"
 
 namespace C6 { namespace UI
 {

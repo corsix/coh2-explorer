@@ -1,6 +1,7 @@
 #pragma once
 #include "window.h"
-#include "../arena.h"
+
+class Arena;
 
 namespace C6 { namespace UI
 {
