@@ -2,6 +2,7 @@
 #include "win32.h"
 #include "mouse.h"
 #include "app.h"
+#include "dc.h"
 #include <WindowsX.h>
 using namespace std;
 
@@ -10,7 +11,7 @@ namespace C6 { namespace UI
   Frame::Frame(const char* title, Factories& factories)
     : m_hmonitor(nullptr)
     , m_hwnd(nullptr)
-    , m_dc(factories)
+    , m_dc(new DC(factories))
     , m_current_hover(this)
     , m_factories(factories)
   {
@@ -227,13 +228,13 @@ namespace C6 { namespace UI
     m_position.right = static_cast<float>(rect.right);
     m_position.bottom = static_cast<float>(rect.bottom);
 
-    bool had_rt = m_dc.canDraw();
-    m_dc.unlockSwapChain();
+    bool had_rt = m_dc->canDraw();
+    m_dc->unlockSwapChain();
     m_hmonitor = nullptr;
     if(m_swapchain)
       m_swapchain.resizeBuffers(1, rect.right, rect.bottom, DXGI_FORMAT_B8G8R8A8_UNORM, 0);
     if(had_rt)
-      m_dc.acquireSwapChain(m_factories.d2, m_swapchain);
+      m_dc->acquireSwapChain(m_factories.d2, m_swapchain);
     checkForMonitorChange();
 
     refresh();
@@ -278,7 +279,7 @@ namespace C6 { namespace UI
 #ifndef C6UI_NO_TEXT
     auto params = m_factories.dw.createMonitorRenderingParams(m_hmonitor);
     params = m_factories.dw.createCustomRenderingParams(params.getGamma(), params.getEnhancedContrast(), 1.f, params.getPixelGeometry(), DWRITE_RENDERING_MODE_CLEARTYPE_NATURAL);
-    m_dc.setTextRenderingParams(params);
+    m_dc->setTextRenderingParams(params);
 #endif
   }
 
@@ -294,26 +295,31 @@ namespace C6 { namespace UI
 
     if(!m_swapchain)
       createSwapchain();
-    if(!m_dc.canDraw())
+    if(!m_dc->canDraw())
     {
-      m_dc.acquireSwapChain(m_factories.d2, m_swapchain);
+      m_dc->acquireSwapChain(m_factories.d2, m_swapchain);
       setTextRenderingParams();
     }
 
     m_factories.d3.RSSetScissorRects(rect);
-    m_dc.beginDraw();
+    m_dc->beginDraw();
     try
     {
-      render(m_dc);
+      render(*m_dc);
     }
     catch(...)
     {
-      m_dc.discardDraw();
+      m_dc->discardDraw();
       throw;
     }
-    m_dc.endDraw();
+    m_dc->endDraw();
     m_factories.d3.flush();
     m_swapchain.present(0, 0);
     ValidateRect(m_hwnd, &rect);
+  }
+
+  DC& Frame::getDC()
+  {
+    return *m_dc;
   }
 }}

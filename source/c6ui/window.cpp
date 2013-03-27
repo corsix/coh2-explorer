@@ -1,6 +1,7 @@
 #include "window.h"
 #include "frame.h"
 #include "mouse.h"
+#include "dc.h"
 
 namespace C6 { namespace UI
 {

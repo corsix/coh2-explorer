@@ -1,9 +1,11 @@
 #pragma once
 #include "window.h"
-#include "dc.h"
 
 namespace C6 { namespace UI
 {
+  struct Factories;
+  class DC;
+
   class Frame : public Window
   {
   public:
@@ -11,7 +13,7 @@ namespace C6 { namespace UI
     virtual ~Frame();
 
     HWND getHwnd() { return m_hwnd; }
-    DC& getDC() { return m_dc; }
+    DC& getDC();
 
   private:
     void createWindow(const char* windowName, DWORD style, int x, int y, int width, int height);
@@ -31,7 +33,7 @@ namespace C6 { namespace UI
     C6::DXGI::SwapChain m_swapchain;
     HMONITOR m_hmonitor;
     HWND m_hwnd;
-    DC m_dc;
+    std::unique_ptr<DC> m_dc;
 
     Window* m_current_hover;
     std::unique_ptr<DragHandler> m_drag_handler;
