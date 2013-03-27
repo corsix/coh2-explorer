@@ -2,11 +2,14 @@
 #include "directx.h"
 #include "arena.h"
 #include "hash.h"
-#include "chunky.h"
+#include <memory>
 
 namespace Essence
 {
   class FileSource;
+  class ChunkyFile;
+  class ChunkReader;
+  struct ChunkyString;
 }
 
 namespace Essence { namespace Graphics
