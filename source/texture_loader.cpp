@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "texture_loader.h"
 #include "fs.h"
 #include "directx.h"
@@ -5,7 +6,6 @@
 #include "arena.h"
 #include "presized_arena.h"
 #include "zlib.h"
-#include <unordered_map>
 using namespace std;
 using namespace C6::D3;
 using namespace Essence;

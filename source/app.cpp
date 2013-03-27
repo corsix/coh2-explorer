@@ -1,7 +1,7 @@
+#include "stdafx.h"
 #include "c6ui/app.h"
 #include "main_window.h"
 #include "containers.h"
-#include <vector>
 using namespace std;
 
 namespace C6 { namespace UI

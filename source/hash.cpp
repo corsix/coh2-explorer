@@ -1,3 +1,4 @@
+#include "stdafx.h"
 // The algorithm in this file is public domain.
 // See http://burtleburtle.net/bob/c/lookup2.c for more details.
 #include "hash.h"

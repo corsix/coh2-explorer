@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "lighting_properties.h"
 #include "shader_db.h"
 #include "essence_panel.h"

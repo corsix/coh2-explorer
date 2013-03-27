@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "mouse.h"
 
 namespace C6 { namespace UI

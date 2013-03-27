@@ -1,5 +1,5 @@
+#include "stdafx.h"
 #include "arena.h"
-#include <Windows.h>
 
 Arena::Arena()
   : m_cur_block(nullptr)

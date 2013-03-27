@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "window.h"
 #include "frame.h"
 #include "mouse.h"

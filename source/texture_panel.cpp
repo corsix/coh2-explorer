@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "texture_panel.h"
 #include "c6ui/dc.h"
 

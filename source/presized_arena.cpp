@@ -1,6 +1,6 @@
+#include "stdafx.h"
 #include "presized_arena.h"
 #include "arena.h"
-#include <Windows.h>
 
 PresizedArena::PresizedArena(size_t allocation_limit)
   : m_base(static_cast<char*>(VirtualAlloc(nullptr, allocation_limit, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE)))

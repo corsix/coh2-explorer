@@ -1,4 +1,4 @@
-#define _USE_MATH_DEFINES
+#include "stdafx.h"
 #include "c6ui/dc.h"
 #include "c6ui/app.h"
 #include "essence_panel.h"

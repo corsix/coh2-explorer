@@ -1,6 +1,6 @@
+#include "stdafx.h"
 #include "file_tree.h"
 #include "c6ui/mouse.h"
-#include <algorithm>
 using namespace std;
 using namespace C6::UI;
 

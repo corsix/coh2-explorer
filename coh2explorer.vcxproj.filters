@@ -129,6 +129,9 @@
     <ClCompile Include="source\object_tree.cpp">
       <Filter>Source Files\ui</Filter>
     </ClCompile>
+    <ClCompile Include="source\stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\c6ui\dc.h">
@@ -229,6 +232,12 @@
     </ClInclude>
     <ClInclude Include="source\object_tree.h">
       <Filter>Header Files\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\c6ui\stdafx.h">
+      <Filter>Header Files\c6ui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

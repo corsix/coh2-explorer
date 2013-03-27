@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "properties.h"
 #include "mouse.h"
 #include "dc.h"

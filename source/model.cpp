@@ -1,10 +1,9 @@
+#include "stdafx.h"
 #include "model.h"
 #include "shader_db.h"
 #include "texture_loader.h"
 #include "chunky.h"
 #include "hash.h"
-#include <algorithm>
-#include <map>
 using namespace std;
 using namespace C6::D3;
 

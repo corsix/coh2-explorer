@@ -1,6 +1,6 @@
+#include "stdafx.h"
 #include "chunky.h"
 #include "arena.h"
-#include <algorithm>
 
 namespace Essence
 {

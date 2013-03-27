@@ -1,7 +1,5 @@
+#include "stdafx.h"
 #include "mappable.h"
-#include <Windows.h>
-#include <nice/com.h>
-#include <new>
 
 static void NullaryDeleter(MappedMemory&)
 {

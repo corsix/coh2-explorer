@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "scrolling_container.h"
 #include "mouse.h"
 #include "dc.h"

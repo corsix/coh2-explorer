@@ -1,5 +1,5 @@
+#include "stdafx.h"
 #include "win32.h"
-#include <nice/com.h>
 
 void ThrowLastError(const char* function_name)
 {

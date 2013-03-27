@@ -47,8 +47,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -62,8 +61,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -105,6 +103,9 @@
     <ClCompile Include="source\png.cpp" />
     <ClCompile Include="source\presized_arena.cpp" />
     <ClCompile Include="source\shader_db.cpp" />
+    <ClCompile Include="source\stdafx.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="source\texture_loader.cpp" />
     <ClCompile Include="source\texture_panel.cpp" />
     <ClCompile Include="source\win32.cpp" />
@@ -120,6 +121,7 @@
     <ClInclude Include="source\c6ui\mouse.h" />
     <ClInclude Include="source\c6ui\properties.h" />
     <ClInclude Include="source\c6ui\scrolling_container.h" />
+    <ClInclude Include="source\c6ui\stdafx.h" />
     <ClInclude Include="source\c6ui\tab_control.h" />
     <ClInclude Include="source\c6ui\tree_control.h" />
     <ClInclude Include="source\c6ui\window.h" />
@@ -140,6 +142,7 @@
     <ClInclude Include="source\png.h" />
     <ClInclude Include="source\presized_arena.h" />
     <ClInclude Include="source\shader_db.h" />
+    <ClInclude Include="source\stdafx.h" />
     <ClInclude Include="source\texture_loader.h" />
     <ClInclude Include="source\texture_panel.h" />
     <ClInclude Include="source\win32.h" />

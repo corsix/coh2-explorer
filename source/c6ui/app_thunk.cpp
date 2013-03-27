@@ -1,6 +1,6 @@
+#include "stdafx.h"
 #include "app.h"
 #include "../win32.h"
-#include <string>
 using namespace C6;
 using namespace C6::UI;
 using namespace std;

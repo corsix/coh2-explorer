@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "main_window.h"
 #include "fs.h"
 #include "shader_db.h"

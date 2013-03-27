@@ -1,6 +1,6 @@
+#include "stdafx.h"
 #include "dc.h"
 #include "app.h"
-#include <algorithm>
 #include "../texture_loader.h"
 #include "../mappable.h"
 #include "../win32.h"

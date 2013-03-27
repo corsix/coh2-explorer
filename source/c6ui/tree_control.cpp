@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "tree_control.h"
 #include "mouse.h"
 #include "properties.h"

@@ -1,10 +1,9 @@
 #pragma once
+#include "stdafx.h"
 #include "shader_db.h"
 #include "chunky.h"
 #include "fs.h"
 #include "hash.h"
-#include <algorithm>
-#include <map>
 using namespace std;
 
 namespace

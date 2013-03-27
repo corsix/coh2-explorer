@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "column_layout.h"
 #include "mouse.h"
 #include <numeric>

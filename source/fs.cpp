@@ -1,7 +1,6 @@
+#include "stdafx.h"
 #include "fs.h"
 #include "mappable.h"
-#include <Windows.h>
-#include <algorithm>
 using namespace std;
 
 namespace
