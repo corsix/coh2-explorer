@@ -23,26 +23,10 @@ namespace
 {
   MappedMemory resource(const char* name)
   {
-    std::string problem;
-
-    if(auto hrsc = FindResourceA(HINST_THISCOMPONENT, name, "c6ui"))
+    return WithResource<uint8_t>("c6ui", name, [](const uint8_t* begin, size_t len)
     {
-      if(auto hglob = LoadResource(HINST_THISCOMPONENT, hrsc))
-      {
-        if(auto begin = static_cast<const uint8_t*>(LockResource(hglob)))
-        {
-          auto end = begin + SizeofResource(HINST_THISCOMPONENT, hrsc);
-          return MappedMemory(begin, end);
-        }
-        else
-          problem = "lock";
-      }
-      else
-        problem = "load";
-    }
-    else
-      problem = "find";
-     throw std::logic_error("Cannot " + problem + " resource `" + name + "'");
+      return MappedMemory(begin, begin + len);
+    });
   }
 
   class ResourceFile : public MappableFile

@@ -79,6 +79,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\abp_loader.cpp" />
     <ClCompile Include="source\app.cpp" />
     <ClCompile Include="source\arena.cpp" />
     <ClCompile Include="source\c6ui\app_thunk.cpp" />
@@ -243,6 +244,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="source\abp_loader.h" />
     <ClInclude Include="source\arena.h" />
     <ClInclude Include="source\arena_var_tem.h" />
     <ClInclude Include="source\c6ui\app.h" />
@@ -304,6 +306,7 @@
     <ClInclude Include="tools\common\lua-5.2.2\src\lzio.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\abp_loader.lua" />
     <None Include="resources\noise.rgt" />
     <None Include="resources\rectangle_gs.bin" />
     <None Include="resources\rectangle_ps.bin" />

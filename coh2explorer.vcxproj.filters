@@ -234,6 +234,9 @@
     <ClCompile Include="tools\common\lua-5.2.2\src\lzio.c">
       <Filter>Source Files\lua</Filter>
     </ClCompile>
+    <ClCompile Include="source\abp_loader.cpp">
+      <Filter>Source Files\essence</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\c6ui\dc.h">
@@ -416,6 +419,9 @@
     <ClInclude Include="tools\common\lua-5.2.2\src\lzio.h">
       <Filter>Header Files\lua</Filter>
     </ClInclude>
+    <ClInclude Include="source\abp_loader.h">
+      <Filter>Header Files\essence</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\noise.rgt">
@@ -440,6 +446,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="resources\texture_vs.bin">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resources\abp_loader.lua">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
