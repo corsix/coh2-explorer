@@ -53,7 +53,7 @@ namespace Essence { namespace Graphics
   {
   public:
     Object(ChunkReader& r, ModelLoadContext& ctx, unsigned int& first_index);
-    Object(unsigned int index_count);
+    Object(const ChunkyString* name, unsigned int index_count);
     static void readIndices(ChunkReader& r, uint16_t*& destination);
 
     auto getName() const -> const ChunkyString* { return m_name; }

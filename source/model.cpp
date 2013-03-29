@@ -123,8 +123,8 @@ namespace Essence { namespace Graphics
     m_name = r.readString();
   }
 
-  Object::Object(unsigned int index_count)
-    : m_name(nullptr)
+  Object::Object(const ChunkyString* name, unsigned int index_count)
+    : m_name(name)
     , m_index_count(index_count)
     , m_first_index(0)
   {
@@ -208,7 +208,10 @@ namespace Essence { namespace Graphics
     r.seek(ib.ByteWidth);
     m_indices = ctx.d3.createBuffer(ib, contents);
 
-    m_objects.recreate(&ctx.arena, 1)[0] = ctx.arena.allocTrivial<Object>(index_count);
+    auto name = reinterpret_cast<ChunkyString*>(ctx.arena.mallocArray<char>(sizeof(ChunkyString) + m_name.size() + 1));
+    copy(m_name.begin(), m_name.end(), name->begin());
+
+    m_objects.recreate(&ctx.arena, 1)[0] = ctx.arena.allocTrivial<Object>(name, index_count);
   }
 
   void Mesh::loadDataData8(const Chunk* datadata, ModelLoadContext& ctx)
