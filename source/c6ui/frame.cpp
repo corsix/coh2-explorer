@@ -79,7 +79,9 @@ namespace C6 { namespace UI
         {
           ::SetWindowLongPtrA(hwnd, GWLP_USERDATA, 0);
           self->m_hwnd = nullptr;
+#ifdef _DEBUG
           delete self;
+#endif
         }
         return result;
       }
@@ -150,9 +152,6 @@ namespace C6 { namespace UI
 
     case WM_NCDESTROY:
       m_factories.d3.clearState();
-#ifdef _DEBUG
-      this->~Frame();
-#endif
       PostQuitMessage(0);
       break;
     }
