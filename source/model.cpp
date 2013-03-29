@@ -316,20 +316,20 @@ namespace Essence { namespace Graphics
     return *m_bvol;
   }
 
-  void Model::collectMeshes(const Chunk* foldmesh, std::vector<const Chunk*>& meshes)
+  void Model::loadMeshes(const Chunk* foldmesh, ModelLoadContext& ctx)
   {
     if(auto mgrp = foldmesh->findFirst("FOLDMGRP"))
     {
-      auto children = mgrp->findAll("FOLDMESH");
-      for_each(children.begin(), children.end(), [&](const Chunk* child) { collectMeshes(child, meshes); });
+      for(auto child : mgrp->findAll("FOLDMESH"))
+        loadMeshes(child, ctx);
     }
     else if(auto mrgm = foldmesh->findFirst("FOLDMRGM"))
     {
-      meshes.push_back(mrgm);
+      m_meshes.push_back(m_arena.alloc<Mesh>(mrgm, ctx));
     }
     else if(auto trim = foldmesh->findFirst("FOLDTRIM"))
     {
-      meshes.push_back(trim);
+      m_meshes.push_back(m_arena.alloc<Mesh>(trim, ctx));
     }
     else
     {
@@ -337,38 +337,34 @@ namespace Essence { namespace Graphics
     }
   }
 
-  Model::Model(FileSource* mod_fs, ShaderDatabase* shaders, unique_ptr<MappableFile> rgm_file, Device1& d3)
-    : m_meshes(&m_arena, 0)
-    , m_shaders(shaders)
+  Model::Model(FileSource* mod_fs, ShaderDatabase* shaders, std::vector<std::unique_ptr<const ChunkyFile>> files, Device1& d3)
+    : m_shaders(shaders)
+    , m_files(move(files))
   {
-    if(rgm_file->getSize() == 0)
-      throw runtime_error("Expected a non-empty file.");
-    m_file = ChunkyFile::Open(move(rgm_file));
-    if(!m_file)
-      throw runtime_error("Expected a chunky file.");
-    auto modl = m_file->findFirst("FOLDMODL");
-    auto mtrls = modl->findAll("FOLDMTRL v1");
-    auto root = modl->findFirst("FOLDMESH");
-    vector<const Chunk*> meshes;
-    if(root)
-      collectMeshes(root, meshes);
-    if(meshes.empty())
-      throw runtime_error("Chunky file doesn't contain a model.");
-
     TextureCache textures(mod_fs, d3);
     ModelLoadContext ctx = {m_arena, d3, *m_shaders, textures};
 
-    for_each(mtrls.begin(), mtrls.end(), [&](const Chunk* foldmtrl)
+    for(auto& file : m_files)
     {
-      auto name = foldmtrl->getName();
-      name.resize(name.size() - 1);
-      ctx.materials[name] = m_arena.allocTrivial<Material>(foldmtrl, ctx);
-    });
+      auto modl = file->findFirst("FOLDMODL");
 
-    transform(m_arena, m_meshes, meshes, [&](const Chunk* foldmesh)
-    {
-      return m_arena.alloc<Mesh>(foldmesh, ctx);
-    });
+      auto root = modl->findFirst("FOLDMESH");
+      if(!root)
+        continue;
+
+      for(auto foldmtrl : modl->findAll("FOLDMTRL v1"))
+      {
+        auto name = foldmtrl->getName();
+        name.resize(name.size() - 1);
+        ctx.materials[name] = m_arena.allocTrivial<Material>(foldmtrl, ctx);
+      }
+
+      loadMeshes(root, ctx);
+      ctx.materials.clear();
+    }
+
+    if(m_meshes.empty())
+      throw runtime_error(m_files.size() == 1 ? "Chunky file doesn't contain a model." : "Chunky files don't contain a model.");
   }
 
   Model::~Model()

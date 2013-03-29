@@ -6,6 +6,8 @@
 #include "model.h"
 #include "mappable.h"
 #include "hash.h"
+#include "chunky.h"
+#include "fs.h"
 
 namespace
 {
@@ -108,7 +110,15 @@ namespace Essence { namespace Graphics
 
   void Panel::setModel(FileSource* mod_fs, const std::string& path)
   {
-    setModel(std::unique_ptr<Model>(new Model(mod_fs, getShaders(), mod_fs->readFile(path), getDevice())));
+    auto raw_file = mod_fs->readFile(path);
+    if(raw_file->getSize() == 0)
+      throw std::runtime_error("Expected a non-empty file.");
+    auto chunky_file = ChunkyFile::Open(move(raw_file));
+    if(!chunky_file)
+      throw std::runtime_error("Expected a chunky file.");
+    std::vector<decltype(chunky_file)> chunky_files;
+    chunky_files.push_back(std::move(chunky_file));
+    setModel(std::unique_ptr<Model>(new Model(mod_fs, getShaders(), move(chunky_files), getDevice())));
   }
 
   void Panel::setModel(std::unique_ptr<Model> model)

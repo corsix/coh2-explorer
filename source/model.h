@@ -1,11 +1,11 @@
 #pragma once
 #include "directx.h"
-#include "fs.h"
 #include "arena.h"
 #include "math.h"
 
 namespace Essence
 {
+  class FileSource;
   class Chunk;
   class ChunkyFile;
   class ChunkReader;
@@ -97,19 +97,19 @@ namespace Essence { namespace Graphics
   class Model
   {
   public:
-    Model(FileSource* mod_fs, ShaderDatabase* shaders, std::unique_ptr<MappableFile> rgm_file, C6::D3::Device1& d3);
+    Model(FileSource* mod_fs, ShaderDatabase* shaders, std::vector<std::unique_ptr<const ChunkyFile>> files, C6::D3::Device1& d3);
     ~Model();
 
     void render(C6::D3::Device1& d3, const bool* object_visibility = nullptr);
-    auto getMeshes() -> const ArenaArray<Mesh*>& { return m_meshes; }
+    auto getMeshes() -> const std::vector<Mesh*>& { return m_meshes; }
     auto getObjects() -> std::vector<Object*>;
 
   private:
-    void collectMeshes(const Chunk* foldmesh, std::vector<const Chunk*>& meshes);
+    void loadMeshes(const Chunk* foldmesh, ModelLoadContext& ctx);
 
     Arena m_arena;
-    ArenaArray<Mesh*> m_meshes;
-    std::unique_ptr<const ChunkyFile> m_file;
+    std::vector<Mesh*> m_meshes;
+    std::vector<std::unique_ptr<const ChunkyFile>> m_files;
     ShaderDatabase* m_shaders;
   };
 
