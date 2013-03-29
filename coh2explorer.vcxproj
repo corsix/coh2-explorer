@@ -112,6 +112,134 @@
     <ClCompile Include="source\texture_loader.cpp" />
     <ClCompile Include="source\texture_panel.cpp" />
     <ClCompile Include="source\win32.cpp" />
+    <ClCompile Include="tools\common\lua-5.2.2\src\lapi.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\lauxlib.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\lbaselib.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\lbitlib.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\lcode.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\lcorolib.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\lctype.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\ldblib.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\ldebug.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\ldo.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\ldump.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\lfunc.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\lgc.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\linit.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\liolib.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\llex.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\lmathlib.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\lmem.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\loadlib.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\lobject.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\lopcodes.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\loslib.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\lparser.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\lstate.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\lstring.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\lstrlib.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\ltable.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\ltablib.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\ltm.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\lundump.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\lvm.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="tools\common\lua-5.2.2\src\lzio.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -149,6 +277,31 @@
     <ClInclude Include="source\texture_loader.h" />
     <ClInclude Include="source\texture_panel.h" />
     <ClInclude Include="source\win32.h" />
+    <ClInclude Include="tools\common\lua-5.2.2\src\lapi.h" />
+    <ClInclude Include="tools\common\lua-5.2.2\src\lauxlib.h" />
+    <ClInclude Include="tools\common\lua-5.2.2\src\lcode.h" />
+    <ClInclude Include="tools\common\lua-5.2.2\src\lctype.h" />
+    <ClInclude Include="tools\common\lua-5.2.2\src\ldebug.h" />
+    <ClInclude Include="tools\common\lua-5.2.2\src\ldo.h" />
+    <ClInclude Include="tools\common\lua-5.2.2\src\lfunc.h" />
+    <ClInclude Include="tools\common\lua-5.2.2\src\lgc.h" />
+    <ClInclude Include="tools\common\lua-5.2.2\src\llex.h" />
+    <ClInclude Include="tools\common\lua-5.2.2\src\llimits.h" />
+    <ClInclude Include="tools\common\lua-5.2.2\src\lmem.h" />
+    <ClInclude Include="tools\common\lua-5.2.2\src\lobject.h" />
+    <ClInclude Include="tools\common\lua-5.2.2\src\lopcodes.h" />
+    <ClInclude Include="tools\common\lua-5.2.2\src\lparser.h" />
+    <ClInclude Include="tools\common\lua-5.2.2\src\lstate.h" />
+    <ClInclude Include="tools\common\lua-5.2.2\src\lstring.h" />
+    <ClInclude Include="tools\common\lua-5.2.2\src\ltable.h" />
+    <ClInclude Include="tools\common\lua-5.2.2\src\ltm.h" />
+    <ClInclude Include="tools\common\lua-5.2.2\src\lua.h" />
+    <ClInclude Include="tools\common\lua-5.2.2\src\lua.hpp" />
+    <ClInclude Include="tools\common\lua-5.2.2\src\luaconf.h" />
+    <ClInclude Include="tools\common\lua-5.2.2\src\lualib.h" />
+    <ClInclude Include="tools\common\lua-5.2.2\src\lundump.h" />
+    <ClInclude Include="tools\common\lua-5.2.2\src\lvm.h" />
+    <ClInclude Include="tools\common\lua-5.2.2\src\lzio.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\noise.rgt" />
