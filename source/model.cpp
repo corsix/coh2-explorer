@@ -341,6 +341,8 @@ namespace Essence { namespace Graphics
     : m_meshes(&m_arena, 0)
     , m_shaders(shaders)
   {
+    if(rgm_file->getSize() == 0)
+      throw runtime_error("Expected a non-empty file.");
     m_file = ChunkyFile::Open(move(rgm_file));
     if(!m_file)
       throw runtime_error("Expected a chunky file.");
