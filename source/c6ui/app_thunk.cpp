@@ -85,7 +85,7 @@ namespace C6 { namespace UI
 
   string GetTitle()
   {
-    return "C6UI demo";
+    return "CoH2 Explorer";
   }
 
 }}
