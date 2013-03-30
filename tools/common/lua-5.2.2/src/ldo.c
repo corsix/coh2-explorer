@@ -8,6 +8,7 @@
 #include <setjmp.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdexcept>
 
 #define ldo_c
 #define LUA_CORE
@@ -52,7 +53,9 @@
 /* C++ exceptions */
 #define LUAI_THROW(L,c)		throw(c)
 #define LUAI_TRY(L,c,a) \
-	try { a } catch(...) { if ((c)->status == 0) (c)->status = -1; }
+  try { a } \
+  catch(const std::exception& e) { if ((c)->status == 0) luaO_pushfstring(L, "%s", e.what()), (c)->status = LUA_ERRRUN; } \
+  catch(...) { if ((c)->status == 0) (c)->status = -1; }
 #define luai_jmpbuf		int  /* dummy variable */
 
 #elif defined(LUA_USE_ULONGJMP)
