@@ -18,6 +18,40 @@ namespace Essence { namespace Graphics
   class Effect;
   class Technique;
   struct ModelLoadContext;
+  struct ConditionLoadContext;
+
+  class ConditionListener
+  {
+  public:
+    virtual void onConditionStateChanged() = 0;
+  };
+
+  class Condition
+  {
+  public:
+    Condition(ConditionLoadContext& ctx, const Chunk* datacnbp);
+
+    struct Clause
+    {
+      bool (*evaluate)(const Clause* self, const ChunkyString* property_value);
+      Clause* next_dependent_clause;
+      Condition* parent;
+      uint8_t satisfied;
+      uint8_t is_negated;
+      uint16_t weight;
+    };
+
+    void addListener(ConditionListener* listener);
+    bool isTrue() const { return m_truth_counter >= 0; }
+
+  private:
+    friend class ModelVariable;
+    void fireStateChanged();
+
+    ArenaArray<Clause*> m_clauses;
+    int32_t m_truth_counter;
+    ConditionListener* m_listener;
+  };
 
   namespace PropertyDataType
   {
@@ -51,6 +85,30 @@ namespace Essence { namespace Graphics
     PropertyDataType::E m_data_type;
   protected:
     const ChunkyString* m_value;
+
+    Property(const ChunkyString* name, PropertyDataType::E data_type);
+  };
+
+  class ModelVariable : public Property
+  {
+  public:
+    ModelVariable(Arena& arena, ChunkReader& datadtbp, PropertyDataType::E data_type);
+
+    void setValue(const ChunkyString* new_value);
+    void setValue(float new_value);
+
+    const ChunkyString* const& getValue() const { return m_value; }
+    const ChunkyString* getDefaultValue() const { return m_default_value; }
+    const ArenaArray<const ChunkyString*>& getPossibleValues() const { return m_values; }
+
+    bool affectsAnything() const;
+
+  private:
+    friend class Model;
+
+    Condition::Clause* m_first_dependent_clause;
+    const ChunkyString* m_default_value;
+    ArenaArray<const ChunkyString*> m_values;
   };
 
   class MaterialVariable : public Property
@@ -129,13 +187,18 @@ namespace Essence { namespace Graphics
     void render(C6::D3::Device1& d3, const bool* object_visibility = nullptr);
     auto getMeshes() -> const std::vector<Mesh*>& { return m_meshes; }
     auto getObjects() -> std::vector<Object*>;
+    auto getVariables() -> const std::map<std::string, ModelVariable*>& { return m_variables; }
+
+    void bindVariablesToObjectVisibility(bool* object_visibility, ConditionListener* listener);
 
   private:
     void loadMeshes(const Chunk* foldmesh, ModelLoadContext& ctx);
+    void defineVariables(const Chunk* datadtbp);
 
     Arena m_arena;
     std::vector<Mesh*> m_meshes;
     std::vector<std::unique_ptr<const ChunkyFile>> m_files;
+    std::map<std::string, ModelVariable*> m_variables;
     ShaderDatabase* m_shaders;
   };
 

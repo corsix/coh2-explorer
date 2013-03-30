@@ -4,6 +4,7 @@
 #include "texture_loader.h"
 #include "chunky.h"
 #include "hash.h"
+#include "containers.h"
 using namespace std;
 using namespace C6::D3;
 
@@ -18,12 +19,271 @@ namespace Essence { namespace Graphics
     map<string, Material*> materials;
   };
 
+  struct ConditionLoadContext
+  {
+    Arena& arena;
+    map<string, Condition::Clause**> dependent_clause_head;
+    multimap<string, bool*> objects;
+  };
+
+  namespace
+  {
+    bool operator ==(const ChunkyString& lhs, const ChunkyString& rhs)
+    {
+      return lhs.size() == rhs.size() && !memcmp(lhs.data(), rhs.data(), rhs.size());
+    }
+
+    struct EqualityClause : Condition::Clause
+    {
+      EqualityClause(const ChunkyString* to_match)
+      {
+        evaluate = &EqualityClause::_evaluate;
+        this->to_match = to_match;
+      }
+
+      static bool _evaluate(const Clause* self, const ChunkyString* property_value)
+      {
+        return *static_cast<const EqualityClause*>(self)->to_match == *property_value;
+      }
+
+      const ChunkyString* to_match;
+    };
+
+    struct RangeClause : Condition::Clause
+    {
+      RangeClause(const float* bounds)
+        : lower_bound(bounds[0])
+        , upper_bound(bounds[1])
+      {
+        evaluate = &RangeClause::_evaluate;
+      }
+
+      static bool _evaluate(const Clause* self_, const ChunkyString* property_value_)
+      {
+        runtime_assert(property_value_->size() == sizeof(float), "RangeClause applied to non-float property.");
+        auto property_value = *reinterpret_cast<const float*>(property_value_->data());
+        auto self = static_cast<const RangeClause*>(self_);
+        return self->lower_bound <= property_value && property_value < self->upper_bound;
+      }
+
+      float lower_bound;
+      float upper_bound;
+    };
+
+    template <typename Functor>
+    Condition::Clause* MakeFloatTest(Arena& arena, Functor&& f)
+    {
+      struct Test : Condition::Clause
+      {
+        Test(Functor&& f)
+          : m_f(std::move(f))
+        {
+          evaluate = &Test::_evaluate;
+        }
+
+        static bool _evaluate(const Clause* self_, const ChunkyString* property_value_)
+        {
+          runtime_assert(property_value_->size() == sizeof(float), "FloatTest applied to non-float property.");
+          auto property_value = *reinterpret_cast<const float*>(property_value_->data());
+          auto self = static_cast<const Test*>(self_);
+          return self->m_f(property_value);
+        }
+
+      private:
+        Functor m_f;
+      };
+
+      return arena.allocTrivial<Test>(std::move(f));
+    }
+  }
+
+  namespace
+  {
+    const uint8_t BooleanPropertyValues[] = {5, 0, 0, 0, 'f', 'a', 'l', 's', 'e', 4, 0, 0, 0, 't', 'r', 'u', 'e'};
+    const ChunkyString* BoxFloat(Arena& arena, float value)
+    {
+      auto result = reinterpret_cast<ChunkyString*>(arena.mallocArray<char>(sizeof(ChunkyString) + sizeof(float)));
+      result->size() = sizeof(float);
+      *reinterpret_cast<float*>(result->data()) = value;
+      return result;
+    }
+  }
+
+  Condition::Condition(ConditionLoadContext& ctx, const Chunk* datacnbp)
+    : m_clauses(&ctx.arena, 0)
+    , m_truth_counter(0)
+    , m_listener(nullptr)
+  {
+    ChunkReader r(datacnbp);
+    auto num_clauses = r.read<uint32_t>();
+    if(num_clauses == 0)
+      return;
+
+    for(auto& clause : m_clauses.recreate(&ctx.arena, num_clauses))
+    {
+      auto test_type = r.read<uint32_t>();
+      auto is_negated = r.read<uint8_t>();
+      auto property_name = r.readString()->as<string>();
+      auto list = ctx.dependent_clause_head[property_name];
+      if(list == nullptr)
+        throw runtime_error("DATACNBP refers to unbound variable `" + property_name + "'.");
+      switch(test_type)
+      {
+      case 1: clause = ctx.arena.allocTrivial<EqualityClause>(reinterpret_cast<const ChunkyString*>(BooleanPropertyValues + 9)); break;
+      case 2: clause = ctx.arena.allocTrivial<EqualityClause>(r.readString()); break;
+      case 3: {
+        auto reference_value = r.read<float>();
+        auto comparison = r.read<uint32_t>();
+        float equality_range[2] = {reference_value - .001f, reference_value + .001f};
+        switch(comparison)
+        {
+        case 0: clause = ctx.arena.allocTrivial<RangeClause>(equality_range); break;
+        case 1: clause = ctx.arena.allocTrivial<RangeClause>(equality_range); is_negated ^= 1; break;
+        case 2: clause = MakeFloatTest(ctx.arena, [=](float x) { return x <  reference_value; }); break;
+        case 3: clause = MakeFloatTest(ctx.arena, [=](float x) { return x >  reference_value; }); break;
+        case 4: clause = MakeFloatTest(ctx.arena, [=](float x) { return x <= reference_value; }); break;
+        case 5: clause = MakeFloatTest(ctx.arena, [=](float x) { return x >= reference_value; }); break;
+        default: throw runtime_error("Unknown condition clause float comparison function.");
+        }
+        break; }
+      case 4: clause = ctx.arena.allocTrivial<RangeClause>(r.reinterpret<float>(2)); break;
+      default:
+        throw runtime_error("Unknown condition clause type.");
+      }
+      clause->next_dependent_clause = *list;
+      *list = clause;
+      clause->parent = this;
+      clause->satisfied = 0;
+      clause->is_negated = is_negated;
+      clause->weight = 1;
+    }
+
+    uint32_t num_ands = 0;
+    uint32_t num_ors = 0;
+    auto unknowns = r.reinterpret<uint32_t>(num_clauses);
+    for(uint32_t i = 0; i < num_clauses; ++i)
+    {
+      switch(unknowns[i])
+      {
+      case  0: ++num_ands; break;
+      case  1: ++num_ors;  break;
+      default: throw runtime_error("Unsupported value in condition clause unknown array.");
+      }
+    }
+    uint16_t and_weight = static_cast<uint16_t>(num_ors + 1);
+    m_truth_counter = -(static_cast<int32_t>(and_weight) * static_cast<int32_t>(num_ands));
+    if(num_ors != 0)
+      --m_truth_counter;
+    for(uint32_t i = 0; i < num_clauses; ++i)
+    {
+      auto clause = m_clauses[i];
+      if(unknowns[i] == 0)
+        clause->weight = and_weight;
+      if(clause->is_negated)
+        m_truth_counter += clause->weight;
+    }
+  }
+
+  void Condition::addListener(ConditionListener* listener)
+  {
+    if(m_listener != nullptr)
+      throw logic_error("YAGNI: More than one listener on a condition");
+    m_listener = listener;
+  }
+
+  void Condition::fireStateChanged()
+  {
+    if(m_listener)
+      m_listener->onConditionStateChanged();
+  }
+
   Property::Property(const Chunk* datavar)
   {
     ChunkReader r(datavar);
     m_name = r.readString();
     m_data_type = r.read<PropertyDataType::E>();
     m_value = r.readString();
+  }
+
+  Property::Property(const ChunkyString* name, PropertyDataType::E data_type)
+    : m_name(name)
+    , m_data_type(data_type)
+  {
+  }
+
+  ModelVariable::ModelVariable(Arena& arena, ChunkReader& datadtbp, PropertyDataType::E data_type)
+    : Property(datadtbp.readString(), data_type == PropertyDataType::boolean ? PropertyDataType::string : data_type)
+    , m_values(&arena, 0)
+    , m_first_dependent_clause(nullptr)
+  {
+    switch(data_type)
+    {
+    case PropertyDataType::boolean:
+      m_values.recreate(&arena, 2);
+      m_values[0] = reinterpret_cast<const ChunkyString*>(BooleanPropertyValues + 0);
+      m_values[1] = reinterpret_cast<const ChunkyString*>(BooleanPropertyValues + 9);
+      m_value = m_default_value = m_values[0];
+      break;
+
+    case PropertyDataType::float1: {
+      auto def = datadtbp.read<float>();
+      m_value = BoxFloat(arena, def);
+      m_default_value = BoxFloat(arena, def);
+      m_values.recreate(&arena, 2);
+      m_values[0] = BoxFloat(arena, datadtbp.read<float>());
+      m_values[1] = BoxFloat(arena, datadtbp.read<float>());
+      break; }
+
+    case PropertyDataType::string:
+      for(auto& value : m_values.recreate(&arena, datadtbp.read<uint32_t>()))
+      {
+        value = datadtbp.readString();
+      }
+      m_value = datadtbp.readString();
+      for(auto value : m_values)
+      {
+        if(*value == *m_value)
+        {
+          m_value = value;
+          break;
+        }
+      }
+      m_default_value = m_value;
+      break;
+
+    default:
+      throw logic_error("Unsupported property blueprint data type");
+    }
+  }
+
+  bool ModelVariable::affectsAnything() const
+  {
+    return m_first_dependent_clause != nullptr;
+  }
+
+  void ModelVariable::setValue(const ChunkyString* new_value)
+  {
+    m_value = new_value;
+    for(auto clause = m_first_dependent_clause; clause; clause = clause->next_dependent_clause)
+    {
+      uint32_t inverted = clause->satisfied ^ 1;
+      if(static_cast<uint32_t>(clause->evaluate(clause, new_value)) == inverted)
+      {
+        auto condition = clause->parent;
+        bool was_true = condition->isTrue();
+        clause->satisfied = static_cast<uint8_t>(inverted);
+        condition->m_truth_counter += ((inverted ^ clause->is_negated) * 2 - 1) * static_cast<int32_t>(clause->weight);
+        if(was_true != condition->isTrue())
+          condition->fireStateChanged();
+      }
+    }
+  }
+
+  void ModelVariable::setValue(float new_value)
+  {
+    runtime_assert(m_value->size() == sizeof(float), "setValue(float) can only be called on float variables.");
+    *reinterpret_cast<float*>(const_cast<char*>(m_value->data())) = new_value;
+    setValue(m_value);
   }
 
   MaterialVariable::MaterialVariable(const Chunk* datavar)
@@ -345,6 +605,24 @@ namespace Essence { namespace Graphics
     }
   }
 
+  void Model::defineVariables(const Chunk* datadtbp)
+  {
+    ChunkReader r(datadtbp);
+    static const PropertyDataType::E data_types[] = {PropertyDataType::boolean, PropertyDataType::string, PropertyDataType::float1};
+    for(auto data_type : data_types)
+    {
+      auto num = r.read<uint32_t>();
+      while(num --> 0)
+      {
+        auto variable = m_arena.allocTrivial<ModelVariable>(m_arena, r, data_type);
+        auto& existing = m_variables[variable->getName().as<string>()];
+        if(existing != nullptr && variable->getType() != existing->getType())
+          throw runtime_error("Model variable `" + variable->getName().as<string>() + "' redefined with different type.");
+        existing = variable;
+      }
+    }
+  }
+
   Model::Model(FileSource* mod_fs, ShaderDatabase* shaders, std::vector<std::unique_ptr<const ChunkyFile>> files, Device1& d3)
     : m_shaders(shaders)
     , m_files(move(files))
@@ -356,19 +634,21 @@ namespace Essence { namespace Graphics
     {
       auto modl = file->findFirst("FOLDMODL");
 
-      auto root = modl->findFirst("FOLDMESH");
-      if(!root)
-        continue;
-
-      for(auto foldmtrl : modl->findAll("FOLDMTRL v1"))
+      if(auto foldmesh = modl->findFirst("FOLDMESH"))
       {
-        auto name = foldmtrl->getName();
-        name.resize(name.size() - 1);
-        ctx.materials[name] = m_arena.allocTrivial<Material>(foldmtrl, ctx);
+        for(auto foldmtrl : modl->findAll("FOLDMTRL v1"))
+        {
+          auto name = foldmtrl->getName();
+          name.resize(name.size() - 1);
+          ctx.materials[name] = m_arena.allocTrivial<Material>(foldmtrl, ctx);
+        }
+        loadMeshes(foldmesh, ctx);
+        ctx.materials.clear();
       }
-
-      loadMeshes(root, ctx);
-      ctx.materials.clear();
+      if(auto datadtbp = modl->findFirst("DATADTBP v3"))
+      {
+        defineVariables(datadtbp);
+      }
     }
 
     if(m_meshes.empty())
@@ -427,6 +707,101 @@ namespace Essence { namespace Graphics
         result.push_back(object);
     }
     return result;
+  }
+
+  namespace
+  {
+    class ObjectVisibilityBinding : public ConditionListener
+    {
+    public:
+      ObjectVisibilityBinding(ConditionLoadContext& ctx, const Chunk* datamsd, Condition* condition, ConditionListener* downstream)
+        : m_condition(condition)
+        , m_objects(&ctx.arena, 0)
+        , m_downstream(downstream)
+      {
+        uint32_t num_states = 0;
+        {
+          ChunkReader r(datamsd);
+          r.readString();
+        
+          auto num_objects = r.read<uint32_t>();
+          while(num_objects --> 0)
+          {
+            auto name = r.readString();
+            auto count = ctx.objects.count(name->as<string>());
+            if(count == 0)
+              throw runtime_error("DATAMSD references non-existent object `" + name->as<string>() + "'");
+            num_states += static_cast<uint32_t>(count);
+          }
+        }
+        {
+          ChunkReader r(datamsd);
+          r.readString();
+          r.read<uint32_t>();
+
+          bool state = m_condition->isTrue();
+          for(auto ptr = m_objects.recreate(&ctx.arena, num_states).begin(), end = m_objects.end(); ptr != end; )
+          {
+            auto name = r.readString();
+            for(auto& object : ctx.objects.equal_range(name->as<string>()))
+            {
+              *object.second = state;
+              *ptr++ = object.second;
+            }
+          }
+        }
+        condition->addListener(this);
+      }
+
+      void onConditionStateChanged() override
+      {
+        bool state = m_condition->isTrue();
+        for(auto ptr : m_objects)
+          *ptr = state;
+        if(m_downstream)
+          m_downstream->onConditionStateChanged();
+      }
+
+    private:
+      Condition* m_condition;
+      ArenaArray<bool*> m_objects;
+      ConditionListener* m_downstream;
+    };
+  }
+
+  void Model::bindVariablesToObjectVisibility(bool* object_visibility, ConditionListener* listener)
+  {
+    ConditionLoadContext ctx = {m_arena};
+    for(auto variable : m_variables)
+      ctx.dependent_clause_head[variable.first] = &variable.second->m_first_dependent_clause;
+
+    for(auto object : getObjects())
+    {
+      string name(object->getName()->begin(), find(object->getName()->begin(), object->getName()->end(), ':'));
+      for(auto& c : name)
+        c = static_cast<char>(tolower(c));
+      
+      ctx.objects.insert(make_pair(move(name), object_visibility++));
+    }
+    
+    for(auto& file : m_files)
+    {
+      if(auto foldmsbp = file->findFirst("FOLDMODL")->findFirst("FOLDMSBP v1"))
+      {
+        auto msds = foldmsbp->findAll("DATAMSD? v2");
+        auto cnbps = foldmsbp->findAll("DATACNBP");
+        auto count = (min)(msds.size(), cnbps.size());
+        runtime_assert(cnbps.size() == msds.size(), "Mismatch between number of DATAMSDs and number of DATACNBPs");
+        for(size_t i = 0; i < count; ++i)
+        {
+          auto condition = m_arena.allocTrivial<Condition>(ctx, cnbps[i]);
+          m_arena.allocTrivial<ObjectVisibilityBinding>(ctx, msds[i], condition, listener);
+        }
+      }
+    }
+
+    for(auto variable : m_variables)
+      variable.second->setValue(variable.second->getValue());
   }
 
 } }

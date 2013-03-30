@@ -70,6 +70,7 @@ namespace Essence
   {
   public:
      uint32_t size()  const { return m_size; }
+    uint32_t& size()        { return m_size; }
         char* data()        { return m_elements; }
   const char* data()  const { return m_elements; }
         char* begin()       { return m_elements; }

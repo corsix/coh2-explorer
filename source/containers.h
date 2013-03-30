@@ -26,3 +26,18 @@ range<T> make_range(T begin, T end)
   result.m_end = std::move(end);
   return result;
 }
+
+namespace std
+{
+template <typename T, typename U>
+T begin(pair<T, U> p)
+{
+  return p.first;
+}
+
+template <typename T, typename U>
+U end(pair<T, U> p)
+{
+  return p.second;
+}
+}

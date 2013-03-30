@@ -65,6 +65,14 @@ namespace Essence
           type_len = 4;
         memcpy(reinterpret_cast<uint8_t*>(&type_mask) + 4 - type_len, "\xFF\xFF\xFF\xFF", type_len);
         memcpy(reinterpret_cast<uint8_t*>(&type) + 4 - type_len, query, type_len);
+        for(int i = 0; i < 4; ++i)
+        {
+          if(reinterpret_cast<uint8_t*>(&type)[i] == '?')
+          {
+            reinterpret_cast<uint8_t*>(&type)[i] = 0;
+            reinterpret_cast<uint8_t*>(&type_mask)[i] = 0;
+          }
+        }
         query += type_len;
 
         while(*query == ' ')
