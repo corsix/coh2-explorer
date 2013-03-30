@@ -121,27 +121,11 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="tools\common\lua-5.2.2\src\lbaselib.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <CompileAs>CompileAsCpp</CompileAs>
-    </ClCompile>
-    <ClCompile Include="tools\common\lua-5.2.2\src\lbitlib.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <CompileAs>CompileAsCpp</CompileAs>
-    </ClCompile>
     <ClCompile Include="tools\common\lua-5.2.2\src\lcode.c">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="tools\common\lua-5.2.2\src\lcorolib.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <CompileAs>CompileAsCpp</CompileAs>
-    </ClCompile>
     <ClCompile Include="tools\common\lua-5.2.2\src\lctype.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <CompileAs>CompileAsCpp</CompileAs>
-    </ClCompile>
-    <ClCompile Include="tools\common\lua-5.2.2\src\ldblib.c">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
@@ -153,10 +137,6 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="tools\common\lua-5.2.2\src\ldump.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <CompileAs>CompileAsCpp</CompileAs>
-    </ClCompile>
     <ClCompile Include="tools\common\lua-5.2.2\src\lfunc.c">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -165,27 +145,11 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="tools\common\lua-5.2.2\src\linit.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <CompileAs>CompileAsCpp</CompileAs>
-    </ClCompile>
-    <ClCompile Include="tools\common\lua-5.2.2\src\liolib.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <CompileAs>CompileAsCpp</CompileAs>
-    </ClCompile>
     <ClCompile Include="tools\common\lua-5.2.2\src\llex.c">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="tools\common\lua-5.2.2\src\lmathlib.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <CompileAs>CompileAsCpp</CompileAs>
-    </ClCompile>
     <ClCompile Include="tools\common\lua-5.2.2\src\lmem.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <CompileAs>CompileAsCpp</CompileAs>
-    </ClCompile>
-    <ClCompile Include="tools\common\lua-5.2.2\src\loadlib.c">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
@@ -194,10 +158,6 @@
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <ClCompile Include="tools\common\lua-5.2.2\src\lopcodes.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <CompileAs>CompileAsCpp</CompileAs>
-    </ClCompile>
-    <ClCompile Include="tools\common\lua-5.2.2\src\loslib.c">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
@@ -221,15 +181,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="tools\common\lua-5.2.2\src\ltablib.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <CompileAs>CompileAsCpp</CompileAs>
-    </ClCompile>
     <ClCompile Include="tools\common\lua-5.2.2\src\ltm.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <CompileAs>CompileAsCpp</CompileAs>
-    </ClCompile>
-    <ClCompile Include="tools\common\lua-5.2.2\src\lundump.c">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>

@@ -144,22 +144,10 @@
     <ClCompile Include="tools\common\lua-5.2.2\src\lauxlib.c">
       <Filter>Source Files\lua</Filter>
     </ClCompile>
-    <ClCompile Include="tools\common\lua-5.2.2\src\lbaselib.c">
-      <Filter>Source Files\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="tools\common\lua-5.2.2\src\lbitlib.c">
-      <Filter>Source Files\lua</Filter>
-    </ClCompile>
     <ClCompile Include="tools\common\lua-5.2.2\src\lcode.c">
       <Filter>Source Files\lua</Filter>
     </ClCompile>
-    <ClCompile Include="tools\common\lua-5.2.2\src\lcorolib.c">
-      <Filter>Source Files\lua</Filter>
-    </ClCompile>
     <ClCompile Include="tools\common\lua-5.2.2\src\lctype.c">
-      <Filter>Source Files\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="tools\common\lua-5.2.2\src\ldblib.c">
       <Filter>Source Files\lua</Filter>
     </ClCompile>
     <ClCompile Include="tools\common\lua-5.2.2\src\ldebug.c">
@@ -168,40 +156,22 @@
     <ClCompile Include="tools\common\lua-5.2.2\src\ldo.c">
       <Filter>Source Files\lua</Filter>
     </ClCompile>
-    <ClCompile Include="tools\common\lua-5.2.2\src\ldump.c">
-      <Filter>Source Files\lua</Filter>
-    </ClCompile>
     <ClCompile Include="tools\common\lua-5.2.2\src\lfunc.c">
       <Filter>Source Files\lua</Filter>
     </ClCompile>
     <ClCompile Include="tools\common\lua-5.2.2\src\lgc.c">
       <Filter>Source Files\lua</Filter>
     </ClCompile>
-    <ClCompile Include="tools\common\lua-5.2.2\src\linit.c">
-      <Filter>Source Files\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="tools\common\lua-5.2.2\src\liolib.c">
-      <Filter>Source Files\lua</Filter>
-    </ClCompile>
     <ClCompile Include="tools\common\lua-5.2.2\src\llex.c">
       <Filter>Source Files\lua</Filter>
     </ClCompile>
-    <ClCompile Include="tools\common\lua-5.2.2\src\lmathlib.c">
-      <Filter>Source Files\lua</Filter>
-    </ClCompile>
     <ClCompile Include="tools\common\lua-5.2.2\src\lmem.c">
-      <Filter>Source Files\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="tools\common\lua-5.2.2\src\loadlib.c">
       <Filter>Source Files\lua</Filter>
     </ClCompile>
     <ClCompile Include="tools\common\lua-5.2.2\src\lobject.c">
       <Filter>Source Files\lua</Filter>
     </ClCompile>
     <ClCompile Include="tools\common\lua-5.2.2\src\lopcodes.c">
-      <Filter>Source Files\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="tools\common\lua-5.2.2\src\loslib.c">
       <Filter>Source Files\lua</Filter>
     </ClCompile>
     <ClCompile Include="tools\common\lua-5.2.2\src\lparser.c">
@@ -219,13 +189,7 @@
     <ClCompile Include="tools\common\lua-5.2.2\src\ltable.c">
       <Filter>Source Files\lua</Filter>
     </ClCompile>
-    <ClCompile Include="tools\common\lua-5.2.2\src\ltablib.c">
-      <Filter>Source Files\lua</Filter>
-    </ClCompile>
     <ClCompile Include="tools\common\lua-5.2.2\src\ltm.c">
-      <Filter>Source Files\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="tools\common\lua-5.2.2\src\lundump.c">
       <Filter>Source Files\lua</Filter>
     </ClCompile>
     <ClCompile Include="tools\common\lua-5.2.2\src\lvm.c">
