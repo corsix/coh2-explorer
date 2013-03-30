@@ -18,12 +18,17 @@ namespace Essence { namespace Graphics
     map<string, Material*> materials;
   };
 
-  MaterialVariable::MaterialVariable(const Chunk* datavar)
+  Property::Property(const Chunk* datavar)
   {
     ChunkReader r(datavar);
     m_name = r.readString();
-    m_data_type = r.read<uint32_t>();
+    m_data_type = r.read<PropertyDataType::E>();
     m_value = r.readString();
+  }
+
+  MaterialVariable::MaterialVariable(const Chunk* datavar)
+    : Property(datavar)
+  {
   }
 
   void MaterialVariable::apply(C6::D3::Device1& d3, uint32_t pass)

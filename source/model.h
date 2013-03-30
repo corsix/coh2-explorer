@@ -19,20 +19,46 @@ namespace Essence { namespace Graphics
   class Technique;
   struct ModelLoadContext;
 
-  class MaterialVariable
+  namespace PropertyDataType
+  {
+    enum E : uint32_t
+    {
+      int1,
+      float1,
+      _unknown_2, // possibly int2
+      float2,
+      float3,
+      float4,
+      _unknown_6, // probably some float matrix
+      float4x3,
+      float4x4,
+      texture,
+      boolean,
+      string
+    };
+  }
+
+  class Property
+  {
+  public:
+    Property(const Chunk* datavar);
+
+    inline const ChunkyString& getName() const { return *m_name; }
+    inline PropertyDataType::E getType() const { return m_data_type; }
+
+  private:
+    const ChunkyString* m_name;
+    PropertyDataType::E m_data_type;
+  protected:
+    const ChunkyString* m_value;
+  };
+
+  class MaterialVariable : public Property
   {
   public:
     MaterialVariable(const Chunk* datavar);
     virtual ~MaterialVariable();
     virtual void apply(C6::D3::Device1& d3, uint32_t pass);
-
-    inline const ChunkyString& getName() const { return *m_name; }
-
-  private:
-    const ChunkyString* m_name;
-    uint32_t m_data_type;
-  protected:
-    const ChunkyString* m_value;
   };
 
   class Material
