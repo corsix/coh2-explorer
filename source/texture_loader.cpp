@@ -451,10 +451,11 @@ namespace Essence { namespace Graphics
       : m_mod_fs(mod_fs)
       , m_d3(d3)
     {
-      auto white = CreateConstantTexture(d3, 1.f, 1.f, 1.f, 1.f);
-      string white_name("shaders\\texture_white.rgt");
-      SetDebugObjectName(white, white_name);
-      m_textures[white_name] = d3.createShaderResourceView(white);
+      addBuiltin(d3, "shaders\\texture_white.rgt", 1.f, 1.f, 1.f, 1.f);
+      m_textures["shaders\\texture_gloss.rgt"] =
+      m_textures["shaders\\texture_specular.rgt"] =
+      addBuiltin(d3, "shaders\\texture_diffuse.rgt", 0.f, 0.f, 0.f, 1.f);
+      addBuiltin(d3, "shaders\\texture_normal.rgt", 0.f, .5f, 0.f, .5f);
     }
 
     C6::D3::ShaderResourceView load(const std::string& path)
@@ -470,6 +471,13 @@ namespace Essence { namespace Graphics
     }
 
   private:
+    ShaderResourceView& addBuiltin(C6::D3::Device1& d3, string name, float r, float g, float b, float a)
+    {
+      auto tex = CreateConstantTexture(d3, 1.f, 1.f, 1.f, 1.f);
+      SetDebugObjectName(tex, name);
+      return m_textures[name] = d3.createShaderResourceView(tex);
+    }
+
     std::unordered_map<std::string, C6::D3::ShaderResourceView> m_textures;
     FileSource* m_mod_fs;
     C6::D3::Device1 m_d3;
