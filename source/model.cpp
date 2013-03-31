@@ -473,7 +473,8 @@ namespace Essence { namespace Graphics
     r.seek(ib.ByteWidth);
     m_indices = ctx.d3.createBuffer(ib, contents);
 
-    auto name = reinterpret_cast<ChunkyString*>(ctx.arena.mallocArray<char>(sizeof(ChunkyString) + m_name.size() + 1));
+    auto name = reinterpret_cast<ChunkyString*>(ctx.arena.mallocArray<char>(sizeof(ChunkyString) + m_name.size()));
+    name->size() = m_name.size() - 1;
     copy(m_name.begin(), m_name.end(), name->begin());
 
     m_objects.recreate(&ctx.arena, 1)[0] = ctx.arena.allocTrivial<Object>(name, index_count);
