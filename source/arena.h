@@ -114,7 +114,8 @@ public:
         T* end()         { return m_elements + m_size; }
   const T* end()   const { return m_elements + m_size; }
 
-  T& operator[] (uint32_t index) { return m_elements[index]; }
+        T& operator[] (uint32_t index)       { return m_elements[index]; }
+  const T& operator[] (uint32_t index) const { return m_elements[index]; }
 
   T& at(uint32_t index)
   {
