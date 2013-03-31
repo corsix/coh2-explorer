@@ -91,11 +91,16 @@ namespace C6 { namespace UI
     void addListener(PropertyListener* listener);
 
     void toggleTickState(TreeItem& item);
+    void recomputeStates();
+  protected:
+    void render(DC& dc) override;
   private:
+    tristate_bool_t recomputeStates(TreeItem& item);
     void setTickStateDownward(TreeItem& item, bool state);
     void setTickStateUpward(TreeItem* item);
 
     std::vector<PropertyListener*> m_listeners;
+    bool m_recompute_states_on_render;
   };
 
 }}

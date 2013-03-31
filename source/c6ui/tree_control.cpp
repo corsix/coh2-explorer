@@ -124,6 +124,35 @@ namespace C6 { namespace UI
     }
   }
 
+  void BooleanTreeControl::recomputeStates()
+  {
+    m_recompute_states_on_render = true;
+  }
+
+  void BooleanTreeControl::render(DC& dc)
+  {
+    if(m_recompute_states_on_render)
+    {
+      for(auto item = static_cast<TreeItem*>(m_first_child); item; item = item->m_next_logical_sibling)
+        recomputeStates(*item);
+      m_recompute_states_on_render = false;
+    }
+    __super::render(dc);
+  }
+
+  tristate_bool_t BooleanTreeControl::recomputeStates(TreeItem& item)
+  {
+    if(!item.m_has_children)
+      return *item.m_tick_state;
+
+    tristate_bool_t new_state = 0;
+    for(auto child : item.m_children)
+      new_state |= (1 + recomputeStates(*child));
+    --new_state;
+    *item.m_tick_state = new_state;
+    return new_state;
+  }
+
   Cursor::E TreeItem::onMouseEnter()
   {
     m_is_hovered = true;
@@ -181,6 +210,7 @@ namespace C6 { namespace UI
 
   BooleanTreeControl::BooleanTreeControl(DC& dc)
     : TreeControl(dc)
+    , m_recompute_states_on_render(false)
   {
     m_margin_coefficient = 1.5f;
   }
