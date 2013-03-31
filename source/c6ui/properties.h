@@ -37,6 +37,7 @@ namespace C6 { namespace UI
     void firePropertyChanged();
 
     void appendChannel(float& storage, uint32_t min_colour, uint32_t max_colour);
+    void appendScalar(float& storage, float min_value, float max_value);
 
   private:
     Arena& m_arena; 
