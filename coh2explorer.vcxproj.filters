@@ -201,6 +201,9 @@
     <ClCompile Include="source\abp_loader.cpp">
       <Filter>Source Files\essence</Filter>
     </ClCompile>
+    <ClCompile Include="source\model_properties.cpp">
+      <Filter>Source Files\ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\c6ui\dc.h">
@@ -385,6 +388,9 @@
     </ClInclude>
     <ClInclude Include="source\abp_loader.h">
       <Filter>Header Files\essence</Filter>
+    </ClInclude>
+    <ClInclude Include="source\model_properties.h">
+      <Filter>Header Files\ui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

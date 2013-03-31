@@ -10,6 +10,7 @@
 #include "texture_panel.h"
 #include "png.h"
 #include "lighting_properties.h"
+#include "model_properties.h"
 #include "object_tree.h"
 #include "c6ui/app.h"
 using namespace C6::UI;
@@ -106,10 +107,10 @@ void MainWindow::onFileTreeActivation(std::string path)
 
 void MainWindow::createModelPropertiesUI(Arena& arena)
 {
-  class Listener : public C6::UI::PropertyListener
+  class PListener : public C6::UI::PropertyListener
   {
   public:
-    Listener(Essence::Graphics::Panel& panel)
+    PListener(Essence::Graphics::Panel& panel)
       : m_panel(panel)
     {
     }
@@ -126,10 +127,48 @@ void MainWindow::createModelPropertiesUI(Arena& arena)
   auto active = m_property_tabs->getActiveCaption();
   m_property_tabs->removeAllTabs();
 
-  auto object_visibility = arena.mallocArray<bool>(m_essence->getModel()->getObjects().size());
+  auto model = m_essence->getModel();
+  auto object_visibility = arena.mallocArray<bool>(model->getObjects().size());
   auto objects_tab = arena.alloc<ObjectTree>(arena, getDC(), *m_essence->getModel(), object_visibility);
-  objects_tab->addListener(arena.allocTrivial<Listener>(*m_essence));
+  objects_tab->addListener(arena.allocTrivial<PListener>(*m_essence));
   m_essence->setObjectVisibility(object_visibility);
+
+  if(!model->getVariables().empty())
+  {
+    class CListener : public Essence::Graphics::ConditionListener
+    {
+    public:
+      CListener(ObjectTree& objects_tab, Essence::Graphics::Panel& panel)
+        : m_objects_tab(objects_tab)
+        , m_panel(panel)
+      {
+      }
+
+      void onConditionStateChanged() override
+      {
+        m_objects_tab.recomputeStates();
+        m_panel.refresh();
+      }
+
+    private:
+      ObjectTree& m_objects_tab;
+      Essence::Graphics::Panel& m_panel;
+    };
+    auto listener = arena.allocTrivial<CListener>(*objects_tab, *m_essence);
+
+    try
+    {
+      model->bindVariablesToObjectVisibility(object_visibility, listener);
+      auto variables_tab = arena.alloc<Essence::Graphics::ModelProperties>(arena, getDC(), *m_essence);
+      m_property_tabs->appendTab(arena, L"Variables", variables_tab->wrapInScrollingContainer(arena));
+    }
+    catch(const std::exception& e)
+    {
+      auto msg = std::string("Error whilst processing variable bindings:\n") + e.what();
+      MessageBoxA(getHwnd(), msg.c_str(), "Exception", MB_ICONEXCLAMATION);
+    }
+    objects_tab->recomputeStates();
+  }
 
   m_property_tabs->appendTab(arena, L"Objects", objects_tab->wrapInScrollingContainer(arena));
   m_property_tabs->appendTab(arena, L"Lighting", m_essence_lighting_properties->getContainer());

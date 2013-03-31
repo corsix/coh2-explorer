@@ -103,6 +103,7 @@
     <ClCompile Include="source\main_window.cpp" />
     <ClCompile Include="source\mappable.cpp" />
     <ClCompile Include="source\model.cpp" />
+    <ClCompile Include="source\model_properties.cpp" />
     <ClCompile Include="source\object_tree.cpp" />
     <ClCompile Include="source\png.cpp" />
     <ClCompile Include="source\presized_arena.cpp" />
@@ -223,6 +224,7 @@
     <ClInclude Include="source\mappable.h" />
     <ClInclude Include="source\math.h" />
     <ClInclude Include="source\model.h" />
+    <ClInclude Include="source\model_properties.h" />
     <ClInclude Include="source\object_tree.h" />
     <ClInclude Include="source\png.h" />
     <ClInclude Include="source\presized_arena.h" />
