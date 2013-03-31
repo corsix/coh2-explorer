@@ -43,6 +43,19 @@ namespace C6 { namespace UI
     Arena& m_arena; 
   };
 
+  class EnumProperty : public PropertyGroup
+  {
+  public:
+    EnumProperty(Arena& arena, DC& dc, const wchar_t* title, void*& storage);
+    void firePropertyChanged();
+
+    void appendCase(void* value, const wchar_t* title);
+
+  private:
+    Arena& m_arena;
+    void*& m_storage;
+  };
+
   class PropertyGroupList : public ScrollableWindow
   {
   public:

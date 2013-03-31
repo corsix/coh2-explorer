@@ -293,6 +293,85 @@ namespace C6 { namespace UI
     resized();
   }
 
+  EnumProperty::EnumProperty(Arena& arena, DC& dc, const wchar_t* title, void*& storage)
+    : PropertyGroup(dc, title)
+    , m_arena(arena)
+    , m_storage(storage)
+  {
+  }
+
+  void EnumProperty::firePropertyChanged()
+  {
+    refresh();
+    __super::firePropertyChanged();
+  }
+
+  namespace
+  {
+    class EnumCase : public Window
+    {
+    public:
+      EnumCase(DC& dc, void*& storage, void* value, const wchar_t* title)
+        : m_storage(storage)
+        , m_value(value)
+        , m_title(title)
+      {
+        auto size = dc.measureText(Fonts::Body, title);
+        size.width = ceil(size.width * 1.3f);
+        size.height = ceil(size.height * 1.3f);
+        m_position = D2D1::RectF(0.f, 0.f, size.width, size.height);
+      }
+
+      std::unique_ptr<DragHandler> onMouseDown(D2D_POINT_2F position, MouseButton::E button) override
+      {
+        if(button != MouseButton::Left)
+          return __super::onMouseDown(position, button);
+
+        bool was_inside = false;
+        auto old_value = m_storage;
+        return SimpleDragHandler(*this, position, [=](D2D_POINT_2F position) mutable {
+          bool inside = m_position.left <= position.x && position.x < m_position.right && m_position.top <= position.y && position.y < m_position.bottom;
+          if(inside == was_inside)
+            return;
+          
+          was_inside = inside;
+          m_storage = inside ? m_value : old_value;
+          static_cast<EnumProperty*>(m_parent)->firePropertyChanged();
+        });
+      }
+
+      Cursor::E onMouseEnter() override
+      {
+        return Cursor::Hand;
+      }
+
+    protected:
+      void render(DC& dc) override
+      {
+        bool is_active = m_storage == m_value;
+        auto inner = dc.rectangleOutline(0.f, m_position, is_active ? 0xFF2B2B2B : 0xFF3E3E3E);
+        dc.rectangle(0.f, D2D1::RectF(inner.left, inner.top, inner.right, inner.top + 1.f), is_active ? 0xFF323232 : 0xFF727272);
+        inner.top += 1.f;
+        if(is_active)
+          dc.rectangleV(0.f, inner, 0xFF404040, 0xFF373737);
+        else
+          dc.rectangleV(0.f, inner, 0xFF636363, 0xFF5B5B5B);
+        dc.text(100.f, m_position, 0xFFFFFFFF, Fonts::Body, m_title);
+      }
+
+    private:
+      void*& m_storage;
+      void* m_value;
+      const wchar_t* m_title;
+    };
+  }
+
+  void EnumProperty::appendCase(void* value, const wchar_t* title)
+  {
+    appendChild(m_arena.allocTrivial<EnumCase>(m_dc, m_storage, value, title));
+    resized();
+  }
+
   void PropertyGroupList::addListener(PropertyListener* listener)
   {
     m_listeners.push_back(listener);
