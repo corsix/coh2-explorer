@@ -153,7 +153,7 @@ struct file_t<4>
   uint32_t getTimestamp() const {return modification_time;}
 };
 
-/***** Version 5.0 as used by CoH2 *****/
+/***** Version 5.0 as used by CoH2 alpha *****/
 
 template <>
 struct file_header_t<45> : file_header_t<4>
@@ -212,6 +212,44 @@ struct directory_t<5> : internal::directory_t<uint16_t>
 template <>
 struct file_t<5> : file_t<4>
 {
+};
+
+/***** Version 6.0 (CoH2 beta) *****/
+
+template <>
+struct file_header_t<6>
+{
+  char signature[8];
+  uint32_t version;
+  wchar_t archive_name[64];
+  uint32_t data_header_size;
+  uint32_t data_offset;
+  uint32_t platform;
+
+  inline uint32_t getPlatform() const {return platform;}
+  inline uint32_t getDataHeaderOffset() const {return sizeof(file_header_t);}
+};
+
+template <>
+struct data_header_t<6> : data_header_t<45>
+{
+};
+
+template <>
+struct entry_point_t<6> : internal::entry_point_t<uint32_t>
+{
+  uint32_t folder_offset;
+};
+
+template <>
+struct directory_t<6> : directory_t<45>
+{
+};
+
+template <>
+struct file_t<6> : file_t<4>
+{
+  uint32_t hash;
 };
 
 #pragma pack(pop)

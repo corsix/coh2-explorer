@@ -269,6 +269,8 @@ namespace Essence
         return Archive<45>::create(arena, move(archive), file_header_mem);
       else
         return Archive<5>::create(arena, move(archive), file_header_mem);
+    case 6:
+      return Archive<6>::create(arena, move(archive), file_header_mem);
     default:
       throw std::runtime_error("Unsupported archive version.");
     }
